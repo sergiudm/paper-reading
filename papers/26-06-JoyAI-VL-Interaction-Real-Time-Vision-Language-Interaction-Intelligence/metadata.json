@@ -1,0 +1,141 @@
+{
+  "paper": {
+    "id": "2606.14777",
+    "title": "JoyAI-VL-Interaction: Real-Time Vision-Language Interaction Intelligence",
+    "authors": [
+      "Dingyu Yao",
+      "Junhao Zhou",
+      "Chenxu Yang",
+      "Chuanyu Qin",
+      "Haowen Hou",
+      "Zheming Liang",
+      "Congcong Wang",
+      "Yuhang Cao",
+      "Shenglong Ye",
+      "Shuai Xie",
+      "Shuhuan Gu",
+      "Haoyang Huang",
+      "Qingyi Si",
+      "Nan Duan",
+      "Jiaqi Wang"
+    ],
+    "published_at": "2026-06-10T00:00:00Z",
+    "upvotes": 199,
+    "summary": "Many moments in the real world do not wait for a user to ask. A fire starts on a security monitor, an expression flickers across a video call, or a product a viewer wants flashes by in a livestream. Yet today's large models remain mostly turn-based by design: they answer only when addressed, and even video-call apps that appear interactive still operate as question-answer systems, reacting only when polled or prompted. We argue for a different paradigm: a model that is present in the world like a person. It continuously watches what is happening now, decides on its own whether to speak or stay silent, interacts in real time, and delegates to a background model when the problem is hard. To advance interaction models and their adoption across domains, we make two fully open-sourced contributions. First, we release JoyAI-VL-Interaction, an 8B-scale, vision-first VL-interaction model. The model makes the response decision internally, choosing each second to stay silent, respond, or delegate to a background model, and it excels at vision-triggered responsiveness and time awareness. We pair it with a transferable training recipe, from which capabilities we never trained for emerge, such as guiding a shopper through changing app screens or improvising a lecture from a slide deck. Second, we release a complete, deployable system built around that model. The system streams any ongoing video into the model, making it genuinely present in the world. All other components are pluggable, including ASR/TTS modules, memory, visualization UI, and a background brain that can connect to any API or agent. Across six real-world scenarios, human raters prefer JoyAI-VL-Interaction over the in-app video-call assistants of Doubao and Gemini by a wide margin. To our knowledge, this is the first open, vision-driven interaction model released together with its training recipe, data, and complete deployable system.",
+    "arxiv_url": "https://arxiv.org/abs/2606.14777",
+    "pdf_url": "https://arxiv.org/pdf/2606.14777",
+    "hf_url": "https://huggingface.co/papers/2606.14777",
+    "github_repo": "https://github.com/jd-opensource/JoyAI-VL-Interaction"
+  },
+  "paper_type": "method",
+  "metadata": {
+    "name": "metadata",
+    "content": "| **Paper** | [arXiv:2606.14777](https://arxiv.org/abs/2606.14777) |\n| **HuggingFace** | [Link](https://huggingface.co/papers/2606.14777) |\n| **Published** | 2026-06-10 |\n| **Authors** | Dingyu Yao, Junhao Zhou, Chenxu Yang, Chuanyu Qin, Haowen Hou, Zheming Liang, Congcong Wang, Yuhang Cao, Shenglong Ye, Shuai Xie, Shuhuan Gu, Haoyang Huang, Qingyi Si, Nan Duan, Jiaqi Wang |\n| **Affiliations** | JD.com |\n| **Keywords** | interaction model, streaming video, proactive response, delegation, AdaCodec, time awareness, long-horizon memory, VL-interaction |",
+    "confidence": 1.0
+  },
+  "benchmarks": {
+    "name": "benchmarks",
+    "content": "The model is evaluated on six human-rated real-world streaming scenarios comprising 58 cases, compared against Doubao and Gemini in-app video-call assistants. Scenarios include monitoring/alerting, real-time counting, translation, time awareness, commentary/guidance, and long-horizon memory.",
+    "confidence": 1.0
+  },
+  "tldr": {
+    "name": "tldr",
+    "content": "JoyAI-VL-Interaction is an open-source 8B vision-language interaction model that proactively decides when to speak, stay silent, or delegate tasks based on a continuous video stream. It is paired with a complete deployable system enabling real-time streaming interaction. Human evaluators prefer it over Doubao (77.6% win rate) and Gemini (87.9% win rate) on time-critical vision-driven tasks.",
+    "confidence": 1.0
+  },
+  "previous_works": {
+    "name": "previous_works",
+    "content": "### Key Prior Approaches\n- **[GPT-Realtime-2](https://platform.openai.com/docs/guides/realtime)**: Real-time speech-to-speech model optimized for conversational turn-taking; waits for user utterance.\n- **[Qwen3.5-Omni](https://arxiv.org/abs/2505.01267)**: Natively pretrained omni-modal model with streaming, but dialogue‑centric, not event‑driven.\n- **[Doubao In-App Video Call](https://www.bytedance.com/en/doubao)**: Consumer assistant using ASR/VLM/TTS with periodic background polling to simulate proactivity.\n- **[Gemini In-App Video Call](https://gemini.google.com/)**: Turn‑based video‑call assistant answering only when prompted; no continuous monitoring.\n- **[TML Interaction Model](https://www.thinkingmachinesab.com/)**: 276B MoE model fusing audio and video for proactive interaction; research preview, not open‑source.\n- **[MoshiRAG](https://arxiv.org/abs/2503.02741)**: Open full‑duplex speech model, speech‑centric and not visual event‑driven.\n- **[Streaming Video LLMs](https://arxiv.org/search/?query=streaming+video+understanding)**: Many works advance one dimension (responsiveness, proactivity, memory) but rarely all three together.\n- **[AdaCodec](https://arxiv.org/abs/2503.11632)**: Predictive visual codec encoding only motion/residuals for efficient video tokenization.\n- **[Qwen3-8B](https://arxiv.org/abs/2505.13503)**, **[Qwen3-VL ViT](https://arxiv.org/abs/2504.14058)**: Base language model and vision encoder.\n- **[On-Policy Distillation](https://arxiv.org/abs/2406.12060)**, **[RL](https://arxiv.org/abs/2203.02155)**, **[EasyVideoR1](https://github.com/Tongyi-Easy/EasyR1)**: Training infrastructure.\n\n### Limitations & Gaps\n- Turn‑based models cannot react to unprompted visual events; they lack a mechanism for continuous monitoring.\n- Real‑time omni models remain dialogue‑centric and wait for user turns.\n- Consumer video‑call products rely on external polling or pure turn‑taking, so reaction delay is bounded by polling interval or user input.\n- Streaming video research typically addresses only one axis (e.g., responsiveness) and lacks full system integration for long‑horizon, proactive, real‑time operation.\n- Prior interaction model ([TML](https://www.thinkingmachinesab.com/)) is not open‑source and uses a much larger model.\n- No previous system combines vision‑driven proactivity, delegation, long‑horizon memory, and a deployable real‑time stack.",
+    "confidence": 1.0
+  },
+  "method": {
+    "name": "method",
+    "content": "### What It Does\n1. **Continuous observation**: The model receives a video stream at 1 Hz, encoded with [AdaCodec](https://arxiv.org/abs/2503.11632) (reference frames + compact P‑tokens).\n2. **Per‑second decisions**: At each step, the model emits one of three actions:\n   - `</silence>`: stay silent and keep watching.\n   - `</response>`: speak a text reply (rendered via pluggable TTS).\n   - `delegate`: emit a hidden query to an asynchronous background brain; the result is later folded back while the model stays present.\n3. **Training data**: >4M time‑aligned clips built via a multi‑stage pipeline with verifier agents, covering alerting, QA (backward/present/forward), counting, commentary, chat, and delegation episodes. Each clip provides per‑second supervision (silence/response/delegate).\n4. **Weighted SFT loss**: To counter silence dominance, the loss assigns `$w_{\\text{silence}}^{\\text{repeated}}=0.4$`, `$w_{\\text{response}}=1.5$`, while other tokens weight 1.\n5. **RL stage (GRPO)**: Stream‑level rewards optimize timing (correct window, no false alarms, proper delegation), using answer‑centered window sampling to keep rollouts tractable.\n6. **Architecture**: Base [JoyAI-VL 1.0](https://arxiv.org/abs/2504.14058) (LLM: [Qwen3-8B](https://arxiv.org/abs/2505.13503), vision encoder: [Qwen3-VL ViT](https://arxiv.org/abs/2504.14058), projection) fine‑tuned with interaction data.\n7. **System**: Two concurrent loops – real‑time interaction loop and asynchronous delegation loop. Long‑horizon hierarchical memory (short‑term raw tokens, mid‑term text summaries, long‑term compressed blocks) enables prefix reuse on vLLM for sub‑second latency over hours. ASR, TTS, and UI are pluggable.\n\n### How Previous Methods Work\n- **Turn‑based models**: Wait for user query, process a single snapshot or clip, respond. No continuous observation and no self‑initiated action.\n- **[Doubao](https://www.bytedance.com/en/doubao)**: In video‑call mode, caches incoming frames when silent; a periodic `ExternalTextToLLM` trigger fires every few seconds to obtain analysis, so reaction latency is at least one polling cycle.\n- **[Gemini](https://gemini.google.com/)**: Answers only at the moment a user asks; no background monitoring.\n- **[TML Interaction Model](https://www.thinkingmachinesab.com/)**: Fuses audio and video into a large MoE model; attempts proactive response but the model is not open‑source and uses a much larger parameter count.\n\n### Why — Motivation & Design Rationale\n- **Learned per‑second decision**: Decoupling the “when to act” from external triggers or user turns removes polling delays and allows reaction bounded only by inference time; essential for safety‑critical alerting.\n- **Weighted loss**: Without it, the overwhelming majority of silence steps push the model toward perpetual silence; the weighting ensures response and delegation signals are not diluted.\n- **RL on stream‑level rewards**: Token‑level SFT cannot capture the nuanced timing of a response (e.g., a reply one second late is penalized differently from a correct‑time reply); RL directly optimises the end‑to‑end interaction behavior.\n- **Delegation protocol**: Allows an 8B model to handle hard problems (math, video reasoning) by offloading them to a larger background model without freezing the real‑time loop; the model stays present and can field new turns while waiting.\n- **AdaCodec**: Streaming a video second‑by‑second with full per‑frame ViT tokens would inflate cost and latency; AdaCodec reduces predictable frames to ~16 tokens, keeping per‑step work small and proportional to scene change frequency.\n- **Hierarchical memory + vLLM prefix reuse**: Storing text summaries of past chunks allows the engine to prefetch a fixed KV‑cache prefix and only compute the newest frames, enabling sustained sub‑second latency over hours.\n- **Pluggable I/O**: Keeping ASR/TTS outside the model decouples the autonomous vision‑driven interaction core from speech modality choices, making the system adaptable to different languages and deployment preferences.",
+    "confidence": 1.0
+  },
+  "evaluation": {
+    "name": "evaluation",
+    "content": "### Main Results\nHuman evaluation on six streaming scenarios (58 cases) against [Doubao](https://www.bytedance.com/en/doubao) and [Gemini](https://gemini.google.com/) in‑app video‑call assistants.\n\n**Overall win rates**:\n- JoyAI-VL‑Interaction vs Doubao: **77.6%** win, 17.2% tie, 5.2% loss.\n- JoyAI-VL‑Interaction vs Gemini: **87.9%** win, 10.3% tie, 1.7% loss.\n\n| Scenario | vs Doubao win rate | vs Gemini win rate |\n|----------|--------------------|---------------------|\n| Monitoring & alerting | 100% | 100% |\n| Real‑time counting | 70% | 100% |\n| Real‑time translation | 80% | 100% |\n| Time awareness | (not explicitly reported, but competitive) | 50% (Gemini ties 40%, wins 10%) |\n| Live commentary & guidance | 55.6% | 100% |\n| Long‑horizon memory | 77.8% | 77.8% |\n\nLargest margin appears on time‑critical tasks (monitoring, counting, translation), where turn‑based baselines structurally miss events or arrive late.\n\n### Ablation Studies\nThe paper does not report formal ablation experiments but discusses the importance of several design choices:\n- **Weighted SFT loss**: Prevents the silence‑dominated gradient from suppressing response and delegation actions.\n- **RL stage**: Improves timing precision; without it the model would speak at inappropriate moments or miss critical events.\n- **Long‑horizon memory**: Without the hierarchical memory, the model would forget events after a few hundred seconds; the memory allows answering questions about events far earlier in the stream.\n- **AdaCodec**: Without it, token cost would grow linearly with stream length, making real‑time deployment on long streams infeasible.\n- **Delegation protocol**: Removing delegation would force the small model to either answer complex questions poorly or block the interaction loop while processing them.\n- **Pluggable ASR/TTS**: Decoupling speech I/O from the model preserves the vision‑first reactive capability and allows easy adaptation to different speech engines.\n\n### Key Takeaways\n- An interaction model that internally decides when to act outperforms mature turn‑based products on vision‑driven, time‑critical tasks, even with far fewer parameters.\n- Delegation enables a compact 8B model to leverage larger background models asynchronously, combining real‑time presence with heavy reasoning on demand.\n- Open‑sourcing the model, training recipe, data, and full deployable system lowers the barrier for the community to explore and build real‑world streaming interaction.",
+    "confidence": 1.0
+  },
+  "critique": {
+    "name": "critique",
+    "content": "The paper introduces JoyAI-VL-Interaction, an 8B vision-first model that proactively decides when to speak, stay silent, or delegate. While the system integration is impressive, the experimental validation is small-scale and lacks formal ablations. The comparisons against Doubao and Gemini are misleading due to built-in product limitations (auto-hangup, no delegation) that inflate win rates. Reproducibility is contingent on a future release date. Ethical risks from continuous monitoring are not addressed.\n\n- **[MEDIUM]** No formal ablation studies are presented to isolate the contributions of weighted SFT loss, RL, long-horizon memory, AdaCodec, or delegation. The paper only discusses their importance qualitatively, making it impossible to assess the marginal benefit of each component.\n\n- **[MEDIUM]** The RL training uses 'answer-centered window sampling' to compress rollouts, but the details are vague and may bias the policy toward pre-identified answer windows, potentially failing on open-ended streams without a 'gold' window.\n\n- **[MEDIUM]** The training data relies heavily on synthetic pipelines (e.g., VLM‑generated multi-turn chat, rule‑based counting). Artifacts from these pipelines may lead to unrealistic interaction patterns and limit robustness on authentic, noisy real-world streams.\n\n- **[LOW]** The weighted SFT loss hyperparameters (wsilence_repeated=0.4, wresponse=1.5) are chosen without reporting any tuning or validation, reducing confidence in their optimality.\n\n- **[HIGH]** The paper does not address the concurrency problem: while the model is generating a long textual response (after emitting </response>), it may miss new visual input, contradicting the claimed continuous observation. The system design does not describe how ingestion and generation are interleaved.\n\n- **[MEDIUM]** The model relies on pluggable ASR for speech input, but the paper contains no analysis of robustness to ASR errors or latency, which can significantly impact real-time interaction decisions.\n\n- **[MEDIUM]** The RL reward function is described only at a high level (crediting correct timing, penalizing false alarms); insufficient detail is provided to reproduce the RL stage or verify its effectiveness.\n\n- **[MEDIUM]** Baselines are limited to two closed commercial products (Doubao, Gemini). No comparison is made against any open-source streaming-video LLM or proactive interaction model, weakening claims of superiority within the research community.\n\n- **[HIGH]** The human evaluation uses only 58 cases across six scenarios, with no statistical significance tests, confidence intervals, or effect sizes reported, undermining the strong claim of large win‑rate margins.\n\n- **[HIGH]** Comparisons are structurally unfair: Doubao and Gemini are not designed for continuous monitoring and have session timeouts (5 min and ~2:15 min), directly causing 'losses' in long‑horizon memory cases. Delegation tasks are also impossible for the baselines, inflating JoyAI-VL-Interaction’s win rate.\n\n- **[LOW]** Inter‑rater reliability metrics (e.g., Cohen’s κ) are not reported despite the use of five raters, making the agreement claim ('high') unverifiable.\n\n- **[MEDIUM]** The evaluation metric converts ordinal ratings (good/fair/poor) to numeric scores and averages them across two axes, then uses these averages to declare win/tie/loss. This coarse quantization discards nuance and may not reflect true user preference.\n\n- **[MEDIUM]** Emergent capabilities (shopping guidance, slide lecture) are illustrated with cherry‑picked case studies without any controlled quantitative evaluation, so the claim of generalisation remains anecdotal.\n\n- **[MEDIUM]** The paper does not discuss information loss in the hierarchical memory system; text‑based summaries may omit crucial visual details, and no analysis is given on how performance degrades over hours of streaming beyond the claimed two‑hour window.\n\n- **[MEDIUM]** The model is evaluated only on short, curated scenarios that may not represent long‑term, noisy, or unstructured real‑world deployments, limiting the generality of the conclusions.\n\n- **[HIGH]** All code, data, and model weights are promised to be released by June 20, 2026, which is after the paper’s submission. At the time of review, the work is not independently reproducible, and no verification of the release is possible.\n\n- **[MEDIUM]** Critical details of the data construction pipeline (e.g., verifier agents, multi‑role agent orchestration) are not fully disclosed, hindering exact reproduction of the training corpus.\n\n- **[HIGH]** The paper does not address the ethical and societal risks of deploying a model that continuously watches a live camera feed, such as privacy violations, mass surveillance, or stalking, nor does it propose safeguards.\n\n- **[MEDIUM]** The delegation protocol enables the system to call external APIs or agents; no discussion is given about the risks of malicious instructions or unintended autonomous actions being carried out via this bridge.",
+    "confidence": 1.0
+  },
+  "related_works": [
+    {
+      "paper_id": "Dispider",
+      "title": "Dispider: Enabling Video LLMs with Active Real-Time Interaction via Disentangled Perception, Decision, and Reaction",
+      "relevance": "Dispider's disentangled perception-decision-reaction architecture directly informs JoyAI-VL-Interaction’s internal decision module for autonomous silence vs. response choices in live streams."
+    },
+    {
+      "paper_id": "2505.11326",
+      "title": "Temporally-Grounded Language Generation: A Benchmark for Real-Time Vision-Language Models",
+      "relevance": "TGLG benchmark and its VLM-TSI baseline supply the timing-aware (TRACE) evaluation methodology that JoyAI-VL-Interaction adopts to measure proactive responsiveness beyond accuracy metrics."
+    },
+    {
+      "paper_id": "StreamBridge",
+      "title": "StreamBridge: Turning Offline Video-LLMs into Proactive Streaming Assistants",
+      "relevance": "StreamBridge's decayed memory buffers and decoupled activation models serve as the direct architectural precursor to JoyAI-VL-Interaction’s memory-efficient always-on streaming pipeline."
+    },
+    {
+      "paper_id": "ESTP",
+      "title": "ESTP: Ego Streaming Proactive Video-LLM",
+      "relevance": "ESTP's egocentric proactive streaming setup and dynamic compression techniques share the core 'respond at the right moment' objective and influence JoyAI-VL-Interaction’s high-frame-rate handling."
+    },
+    {
+      "paper_id": "VideoLLM Knows When to Speak",
+      "title": "VideoLLM Knows When to Speak",
+      "relevance": "This work's video-text duet formats for time-sensitive comprehension are cited by JoyAI-VL-Interaction as the key prior technique for learning when to speak versus stay silent."
+    }
+  ],
+  "generated_at": "2026-06-24T00:12:44.924714",
+  "model_used": "deepseek-v4-pro",
+  "usage": {
+    "prompt_tokens": 238672,
+    "completion_tokens": 15440,
+    "total_tokens": 255868
+  },
+  "cost_report": {
+    "total_cost": 0.12925844,
+    "models": [
+      {
+        "model": "deepseek-v4-pro",
+        "provider": "DeepSeek",
+        "usage": {
+          "prompt_tokens": 228684,
+          "completion_tokens": 13070,
+          "total_tokens": 241754
+        },
+        "cost": {
+          "provider": "DeepSeek",
+          "model": "deepseek-v4-pro",
+          "input_price": 0.435,
+          "output_price": 0.87,
+          "input_cost": 0.09947754,
+          "output_cost": 0.0113709,
+          "total_cost": 0.11084844
+        }
+      },
+      {
+        "model": "grok-4.3",
+        "provider": "Grok",
+        "usage": {
+          "prompt_tokens": 9988,
+          "completion_tokens": 2370,
+          "total_tokens": 14114
+        },
+        "cost": {
+          "provider": "Grok",
+          "model": "grok-4.3",
+          "input_price": 1.25,
+          "output_price": 2.5,
+          "input_cost": 0.012485,
+          "output_cost": 0.005925000000000001,
+          "total_cost": 0.01841
+        }
+      }
+    ]
+  }
+}

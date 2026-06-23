@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JoyAI-VL-Interaction: Real-Time Vision-Language Interaction Intelligence — ppagent Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Light Theme Settings */
+    --bg-app: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+    --border: #e2e8f0;
+    
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-light: #64748b;
+    
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: #e0e7ff;
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+    
+    --code-bg: #f1f5f9;
+    --tldr-bg: rgba(79, 70, 229, 0.05);
+  }
+
+  [data-theme="dark"] {
+    /* Dark Theme Settings */
+    --bg-app: #090d16;
+    --bg-card: #111827;
+    --bg-sidebar: #0f172a;
+    --border: #1f2937;
+    
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-light: #6b7280;
+    
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-light: rgba(99, 102, 241, 0.15);
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    
+    --success: #10b981;
+    --success-light: rgba(16, 185, 129, 0.15);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.15);
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+    
+    --code-bg: #1e293b;
+    --tldr-bg: rgba(99, 102, 241, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 1024px) {
+    body {
+      flex-direction: row;
+    }
+    .sidebar {
+      width: 320px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+    }
+    .main-content {
+      margin-left: 320px;
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1000px;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .sidebar {
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+    }
+    .main-content {
+      width: 100%;
+      padding: 2.5rem 1.5rem;
+    }
+  }
+
+  /* Sidebar Styling */
+  .sidebar {
+    background-color: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 1.5rem;
+    gap: 2rem;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-icon {
+    background: var(--primary-gradient);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex-grow: 1;
+    margin-top: 1rem;
+  }
+
+  .nav-section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--primary);
+    background-color: var(--primary-light);
+  }
+
+  .nav-link.active {
+    color: white;
+    background: var(--primary-gradient);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .nav-icon {
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+  
+  .nav-link.active .nav-icon {
+    opacity: 1;
+  }
+
+  .sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .theme-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .control-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .theme-toggle {
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+  }
+
+  .theme-toggle:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+
+  .sun-icon {
+    display: none;
+  }
+  .moon-icon {
+    display: block;
+  }
+  [data-theme="dark"] .sun-icon {
+    display: block;
+  }
+  [data-theme="dark"] .moon-icon {
+    display: none;
+  }
+
+  /* Main Content Area */
+  .main-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .main-header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--text-main);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .paper-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    font-weight: 500;
+  }
+
+  /* TLDR Card */
+  .tldr-card {
+    background: var(--tldr-bg);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 16px 16px 0;
+    padding: 1.75rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tldr-badge {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--primary-gradient);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tldr-content {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--text-main);
+  }
+
+  /* Content Cards */
+  .content-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .content-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .content-card h2 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .heading-icon {
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  /* Info Grid Styling */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .info-item.full-width {
+    grid-column: 1 / -1;
+  }
+  .info-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    font-weight: 600;
+  }
+  .info-value {
+    color: var(--text-main);
+    font-size: 0.95rem;
+  }
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    align-self: start;
+  }
+  .arxiv-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+  }
+  .arxiv-badge:hover {
+    background: var(--primary);
+    color: white;
+  }
+  .hf-badge {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.15);
+  }
+  .hf-badge:hover {
+    background: #d97706;
+    color: white;
+  }
+  .github-badge {
+    background: rgba(15, 23, 42, 0.08);
+    color: #0f172a;
+    border: 1px solid rgba(15, 23, 42, 0.15);
+  }
+  .github-badge:hover {
+    background: #0f172a;
+    color: white;
+  }
+  [data-theme="dark"] .github-badge {
+    background: rgba(226, 232, 240, 0.1);
+    color: #e2e8f0;
+    border-color: rgba(226, 232, 240, 0.2);
+  }
+  [data-theme="dark"] .github-badge:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+  .blog-badge {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .blog-badge:hover {
+    background: #059669;
+    color: white;
+  }
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+  }
+  .keyword-tag {
+    background: var(--bg-app);
+    color: var(--text-muted);
+  }
+  .affiliation-tag {
+    background: rgba(16, 185, 129, 0.08);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.15);
+  }
+  .paper-type-tag {
+    background: rgba(147, 51, 234, 0.08);
+    color: #a855f7;
+    border-color: rgba(147, 51, 234, 0.15);
+  }
+  .paper-type-tag.active {
+    background: var(--primary-gradient);
+    color: #ffffff;
+    border-color: transparent;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+  }
+  .authors-list {
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Markdown Body Rendering Styling */
+  .markdown-body {
+    font-size: 0.975rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* Paper Figure (Method pipeline diagram) */
+  .paper-figure {
+    margin: 0 0 1.75rem 0;
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .paper-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+    object-fit: contain;
+    background: #ffffff;
+  }
+  [data-theme="dark"] .paper-figure img {
+    /* Most figures have white backgrounds; keep them readable on dark theme */
+    background: #ffffff;
+  }
+  .paper-figure figcaption {
+    padding: 0.75rem 1.1rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    border-top: 1px solid var(--border);
+  }
+  .markdown-body p {
+    margin-bottom: 1.25rem;
+  }
+  .markdown-body p:last-child {
+    margin-bottom: 0;
+  }
+  .markdown-body ul, .markdown-body ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .markdown-body li {
+    margin-bottom: 0.5rem;
+  }
+  .markdown-body blockquote {
+    border-left: 4px solid var(--primary);
+    background: var(--tldr-bg);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 12px 12px 0;
+    color: var(--text-muted);
+  }
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .markdown-body th, .markdown-body td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .markdown-body th {
+    background: var(--bg-app);
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  .markdown-body tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  [data-theme="dark"] .markdown-body tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .markdown-body pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .markdown-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    color: var(--primary);
+  }
+  .markdown-body pre code {
+    padding: 0;
+    background: none;
+    font-size: 0.9rem;
+    color: var(--text-main);
+  }
+
+  /* Critique Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-right: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-high {
+    background-color: var(--danger-light);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .badge-medium {
+    background-color: var(--warning-light);
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.2);
+  }
+  .badge-low {
+    background-color: var(--border);
+    color: var(--text-light);
+    border: 1px solid rgba(100, 116, 139, 0.2);
+  }
+
+  /* Related Papers List */
+  .related-papers-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .related-papers-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .related-paper-item {
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  .related-paper-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+  }
+  .related-paper-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.4;
+  }
+  .related-paper-relevance {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    line-height: 1.45;
+  }
+  .related-paper-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+  .arxiv-id-label {
+    font-family: monospace;
+    background: var(--border);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    color: var(--text-muted);
+  }
+  .related-paper-item:hover .arxiv-id-label {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem;
+    color: var(--text-light);
+    text-align: center;
+    gap: 0.5rem;
+  }
+  .empty-icon {
+    color: var(--text-light);
+    opacity: 0.5;
+  }
+
+  /* Cost Breakdown Dashboard */
+  .cost-dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  @media (min-width: 768px) {
+    .cost-dashboard {
+      grid-template-columns: 2fr 3fr;
+    }
+  }
+  .cost-summary-card {
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 12px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .cost-summary-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+  }
+  .cost-summary-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+    margin-bottom: 0.5rem;
+  }
+  .cost-summary-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    font-family: monospace;
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+  .cost-summary-sub {
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+  .cost-summary-sub span {
+    font-family: monospace;
+    background: rgba(255,255,255,0.15);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+  }
+  .cost-summary-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+  }
+
+  .cost-details-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .token-usage-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .bar-track {
+    height: 12px;
+    background: var(--bg-app);
+    border-radius: 6px;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .bar-fill {
+    height: 100%;
+  }
+  .input-fill {
+    background-color: var(--primary);
+  }
+  .output-fill {
+    background-color: var(--success);
+  }
+  .bar-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .input-dot {
+    background-color: var(--primary);
+  }
+  .output-dot {
+    background-color: var(--success);
+  }
+
+  .cost-breakdown-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .cost-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .cost-detail-row.total-row {
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .detail-label {
+    color: var(--text-muted);
+  }
+  .detail-value {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .detail-value strong {
+    font-family: monospace;
+  }
+  .detail-price {
+    font-family: monospace;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    background: var(--bg-app);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  /* Copy Code Block Button */
+  .copy-code-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    z-index: 10;
+  }
+  div:hover > .copy-code-btn {
+    opacity: 1;
+  }
+  .copy-code-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+
+  /* Footer Section */
+  .footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-light);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer strong {
+    color: var(--text-muted);
+  }
+  .footer code {
+    font-family: monospace;
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+</style>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" defer></script>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.886a1 1 0 0 1-.95.688H2.9l4.98 3.618a1 1 0 0 1 .363 1.118L6.33 20.2l4.98-3.618a1 1 0 0 1 1.178 0l4.98 3.618-1.913-5.89a1 1 0 0 1 .363-1.117l4.98-3.619h-6.238a1 1 0 0 1-.95-.688z"/></svg>
+      </span>
+      <span class="logo-text">ppagent</span>
+      <span class="logo-tag">Report</span>
+    </div>
+  </div>
+  
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Navigation</div>
+    <a href="#overview" class="nav-link active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Overview
+    </a>
+    <a href="#benchmarks" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      Benchmarks
+    </a>
+    <a href="#previous-work" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><line x1="12" x2="12" y1="7" y2="12"/><line x1="12" x2="16" y1="12" y2="14"/></svg>
+      Previous Work
+    </a>
+    
+    <a href="#landscape" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Landscape
+    </a>
+    
+    <a href="#method" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+      Method
+    </a>
+    <a href="#evaluation" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0Z"/></svg>
+      Performance Evaluation
+    </a>
+    <a href="#critique" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Critique
+    </a>
+    <a href="#related-papers" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/></svg>
+      Related Papers
+    </a>
+    
+    <a href="#cost-report" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      Cost Report
+    </a>
+    
+  </nav>
+  
+  <div class="sidebar-footer">
+    <div class="theme-control">
+      <span class="control-label">Theme Mode</span>
+      <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle dark/light mode">
+        <!-- Sun icon -->
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <!-- Moon icon -->
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<main class="main-content"><header class="main-header">
+    <h1>JoyAI-VL-Interaction: Real-Time Vision-Language Interaction Intelligence</h1>
+    
+    <p class="paper-subtitle">JD.com</p>
+    
+  </header>
+
+  <div class="tldr-card">
+    <div class="tldr-badge">TL;DR</div>
+    <div class="tldr-content">JoyAI-VL-Interaction is an open-source 8B vision-language interaction model that proactively decides when to speak, stay silent, or delegate tasks based on a continuous video stream. It is paired with a complete deployable system enabling real-time streaming interaction. Human evaluators prefer it over Doubao (77.6% win rate) and Gemini (87.9% win rate) on time-critical vision-driven tasks.</div>
+  </div>
+
+  <section id="overview" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Paper Information
+    </h2>
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Paper Link</div>
+        <div class="info-value">
+          <a href="https://arxiv.org/abs/2606.14777" target="_blank" class="btn-link arxiv-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+            arXiv:2606.14777
+          </a>
+        </div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">Hugging Face</div>
+        <div class="info-value">
+          <a href="https://huggingface.co/papers/2606.14777" target="_blank" class="btn-link hf-badge">
+            🤗 HF Paper Page
+          </a>
+        </div>
+      </div>
+
+      
+      <div class="info-item">
+        <div class="info-label">Code</div>
+        <div class="info-value">
+          <a href="https://github.com/jd-opensource/JoyAI-VL-Interaction" target="_blank" class="btn-link github-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            GitHub Repository
+          </a>
+        </div>
+      </div>
+      
+
+      
+      <div class="info-item">
+        <div class="info-label">Blog</div>
+        <div class="info-value">
+          <a href="https://joyai-vl-video-future-academy-jd.github.io/JoyAI-VL-Interaction/" target="_blank" class="btn-link blog-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+            Paper Blog Post
+          </a>
+        </div>
+      </div>
+      
+
+      <div class="info-item">
+        <div class="info-label">Published At</div>
+        <div class="info-value date-value">
+          <strong>2026-06-10</strong>
+        </div>
+      </div>
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Paper Type</div>
+        <div class="info-value tags-list">
+          
+          <span class="tag paper-type-tag active" title="New Method / Architecture — proposes a novel method, model, or algorithm and evaluates it on benchmarks — classified type">Method ✓</span>
+          
+          <span class="tag paper-type-tag" title="New Benchmark / Dataset — introduces a new evaluation benchmark, dataset, or evaluation protocol">Benchmark</span>
+          
+          <span class="tag paper-type-tag" title="Survey / Review — provides a comprehensive review and taxonomy of a research area">Survey</span>
+          
+          <span class="tag paper-type-tag" title="Analysis / Demystification — analyzes, explains, or demystifies existing methods or phenomena">Analysis</span>
+          
+          <span class="tag paper-type-tag" title="Empirical Study — conducts systematic experiments to compare approaches or study scaling/phenomena">Empirical</span>
+          
+          <span class="tag paper-type-tag" title="System / Framework / Toolkit — presents an engineering system, library, or serving infrastructure">Framework</span>
+          
+          <span class="tag paper-type-tag" title="Position / Opinion / Critique — argues for/against an approach, challenges assumptions, or proposes research directions">Position</span>
+          
+          <span class="tag paper-type-tag" title="Application / Case Study — applies existing methods to a specific real-world domain or problem">Application</span>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Keywords</div>
+        <div class="info-value tags-list">
+          
+          <span class="tag keyword-tag">interaction model</span>
+          
+          <span class="tag keyword-tag">streaming video</span>
+          
+          <span class="tag keyword-tag">proactive response</span>
+          
+          <span class="tag keyword-tag">delegation</span>
+          
+          <span class="tag keyword-tag">AdaCodec</span>
+          
+          <span class="tag keyword-tag">time awareness</span>
+          
+          <span class="tag keyword-tag">long-horizon memory</span>
+          
+          <span class="tag keyword-tag">VL-interaction</span>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Affiliations</div>
+        <div class="info-value tags-list">
+          
+          <span class="tag affiliation-tag">JD.com</span>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Authors</div>
+        <div class="info-value authors-list">
+          Dingyu Yao, Junhao Zhou, Chenxu Yang, Chuanyu Qin, Haowen Hou, Zheming Liang, Congcong Wang, Yuhang Cao, Shenglong Ye, Shuai Xie, Shuhuan Gu, Haoyang Huang, Qingyi Si, Nan Duan, Jiaqi Wang
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section id="benchmarks" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      Benchmarks
+    </h2>
+    
+    <div class="markdown-body">
+      <p>The model is evaluated on six human-rated real-world streaming scenarios comprising 58 cases, compared against Doubao and Gemini in-app video-call assistants. Scenarios include monitoring/alerting, real-time counting, translation, time awareness, commentary/guidance, and long-horizon memory.</p>
+    </div>
+  </section>
+
+  <section id="previous-work" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><line x1="12" x2="12" y1="7" y2="12"/><line x1="12" x2="16" y1="12" y2="14"/></svg>
+      Previous Work &amp; Limitations
+    </h2>
+    
+    <div class="markdown-body">
+      <h3>Key Prior Approaches</h3>
+<ul>
+<li><strong><a href="https://platform.openai.com/docs/guides/realtime">GPT-Realtime-2</a></strong>: Real-time speech-to-speech model optimized for conversational turn-taking; waits for user utterance.</li>
+<li><strong><a href="https://arxiv.org/abs/2505.01267">Qwen3.5-Omni</a></strong>: Natively pretrained omni-modal model with streaming, but dialogue‑centric, not event‑driven.</li>
+<li><strong><a href="https://www.bytedance.com/en/doubao">Doubao In-App Video Call</a></strong>: Consumer assistant using ASR/VLM/TTS with periodic background polling to simulate proactivity.</li>
+<li><strong><a href="https://gemini.google.com/">Gemini In-App Video Call</a></strong>: Turn‑based video‑call assistant answering only when prompted; no continuous monitoring.</li>
+<li><strong><a href="https://www.thinkingmachinesab.com/">TML Interaction Model</a></strong>: 276B MoE model fusing audio and video for proactive interaction; research preview, not open‑source.</li>
+<li><strong><a href="https://arxiv.org/abs/2503.02741">MoshiRAG</a></strong>: Open full‑duplex speech model, speech‑centric and not visual event‑driven.</li>
+<li><strong><a href="https://arxiv.org/search/?query=streaming+video+understanding">Streaming Video LLMs</a></strong>: Many works advance one dimension (responsiveness, proactivity, memory) but rarely all three together.</li>
+<li><strong><a href="https://arxiv.org/abs/2503.11632">AdaCodec</a></strong>: Predictive visual codec encoding only motion/residuals for efficient video tokenization.</li>
+<li><strong><a href="https://arxiv.org/abs/2505.13503">Qwen3-8B</a></strong>, <strong><a href="https://arxiv.org/abs/2504.14058">Qwen3-VL ViT</a></strong>: Base language model and vision encoder.</li>
+<li><strong><a href="https://arxiv.org/abs/2406.12060">On-Policy Distillation</a></strong>, <strong><a href="https://arxiv.org/abs/2203.02155">RL</a></strong>, <strong><a href="https://github.com/Tongyi-Easy/EasyR1">EasyVideoR1</a></strong>: Training infrastructure.</li>
+</ul>
+<h3>Limitations &amp; Gaps</h3>
+<ul>
+<li>Turn‑based models cannot react to unprompted visual events; they lack a mechanism for continuous monitoring.</li>
+<li>Real‑time omni models remain dialogue‑centric and wait for user turns.</li>
+<li>Consumer video‑call products rely on external polling or pure turn‑taking, so reaction delay is bounded by polling interval or user input.</li>
+<li>Streaming video research typically addresses only one axis (e.g., responsiveness) and lacks full system integration for long‑horizon, proactive, real‑time operation.</li>
+<li>Prior interaction model (<a href="https://www.thinkingmachinesab.com/">TML</a>) is not open‑source and uses a much larger model.</li>
+<li>No previous system combines vision‑driven proactivity, delegation, long‑horizon memory, and a deployable real‑time stack.</li>
+</ul>
+    </div>
+  </section>
+
+  
+  <section id="landscape" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Related Work Landscape
+    </h2>
+    <div class="markdown-body">
+      <p>The research domain of real-time, proactive vision-language models (VLMs) has rapidly emerged around 2025, shifting focus from offline, turn-based video understanding to causal/streaming architectures that process live video feeds continuously. Core challenges include low-latency frame-by-frame processing, long-context memory management under streaming constraints, and autonomous decision-making about when to respond, remain silent, or delegate tasks. Foundational efforts include Dispider, which disentangles perception/decision/reaction modules, VideoLLM Knows When to Speak with its video-text duet formats, the TGLG benchmark with VLM-TSI baseline for timing-aware evaluation, and HRIBench for latency trade-offs. More recent frameworks such as StreamBridge (decayed memory buffers and decoupled activation), ESTP (egocentric dynamic compression), StreamMind, and ROMA advance memory-efficient proactivity, while JoyAI-VL-Interaction stands out as the first fully open-source system that internalizes silence/response/delegate decisions at every second, achieving strong human preference wins and emergent capabilities.</p>
+    </div>
+  </section>
+  
+
+  <section id="method" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+      Method
+    </h2>
+    
+    <figure class="paper-figure">
+      <img src="figures/figure_1.png" alt="Figure 1: JoyAI-VL-Interaction processes a continuous video stream in real time, deciding at each step whether to respond, stay silent, or delegate complex tasks to a background model for asynchronous handling." loading="lazy">
+      <figcaption>Figure 1: JoyAI-VL-Interaction processes a continuous video stream in real time, deciding at each step whether to respond, stay silent, or delegate complex tasks to a background model for asynchronous handling.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_2.png" alt="Figure 2: Model overview and video encoding with AdaCodec [9]." loading="lazy">
+      <figcaption>Figure 2: Model overview and video encoding with AdaCodec [9].</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_3.png" alt="Figure 3: Overview of the JoyAI-VL-Interaction System." loading="lazy">
+      <figcaption>Figure 3: Overview of the JoyAI-VL-Interaction System.</figcaption>
+    </figure>
+    <div class="markdown-body">
+      <h3>What It Does</h3>
+<ol>
+<li><strong>Continuous observation</strong>: The model receives a video stream at 1 Hz, encoded with <a href="https://arxiv.org/abs/2503.11632">AdaCodec</a> (reference frames + compact P‑tokens).</li>
+<li><strong>Per‑second decisions</strong>: At each step, the model emits one of three actions:</li>
+<li><code>&lt;/silence&gt;</code>: stay silent and keep watching.</li>
+<li><code>&lt;/response&gt;</code>: speak a text reply (rendered via pluggable TTS).</li>
+<li><code>delegate</code>: emit a hidden query to an asynchronous background brain; the result is later folded back while the model stays present.</li>
+<li><strong>Training data</strong>: &gt;4M time‑aligned clips built via a multi‑stage pipeline with verifier agents, covering alerting, QA (backward/present/forward), counting, commentary, chat, and delegation episodes. Each clip provides per‑second supervision (silence/response/delegate).</li>
+<li><strong>Weighted SFT loss</strong>: To counter silence dominance, the loss assigns <code>&lt;!--MATH_PLACEHOLDER_0--&gt;</code>, <code>&lt;!--MATH_PLACEHOLDER_1--&gt;</code>, while other tokens weight 1.</li>
+<li><strong>RL stage (GRPO)</strong>: Stream‑level rewards optimize timing (correct window, no false alarms, proper delegation), using answer‑centered window sampling to keep rollouts tractable.</li>
+<li><strong>Architecture</strong>: Base <a href="https://arxiv.org/abs/2504.14058">JoyAI-VL 1.0</a> (LLM: <a href="https://arxiv.org/abs/2505.13503">Qwen3-8B</a>, vision encoder: <a href="https://arxiv.org/abs/2504.14058">Qwen3-VL ViT</a>, projection) fine‑tuned with interaction data.</li>
+<li><strong>System</strong>: Two concurrent loops – real‑time interaction loop and asynchronous delegation loop. Long‑horizon hierarchical memory (short‑term raw tokens, mid‑term text summaries, long‑term compressed blocks) enables prefix reuse on vLLM for sub‑second latency over hours. ASR, TTS, and UI are pluggable.</li>
+</ol>
+<h3>How Previous Methods Work</h3>
+<ul>
+<li><strong>Turn‑based models</strong>: Wait for user query, process a single snapshot or clip, respond. No continuous observation and no self‑initiated action.</li>
+<li><strong><a href="https://www.bytedance.com/en/doubao">Doubao</a></strong>: In video‑call mode, caches incoming frames when silent; a periodic <code>ExternalTextToLLM</code> trigger fires every few seconds to obtain analysis, so reaction latency is at least one polling cycle.</li>
+<li><strong><a href="https://gemini.google.com/">Gemini</a></strong>: Answers only at the moment a user asks; no background monitoring.</li>
+<li><strong><a href="https://www.thinkingmachinesab.com/">TML Interaction Model</a></strong>: Fuses audio and video into a large MoE model; attempts proactive response but the model is not open‑source and uses a much larger parameter count.</li>
+</ul>
+<h3>Why — Motivation &amp; Design Rationale</h3>
+<ul>
+<li><strong>Learned per‑second decision</strong>: Decoupling the “when to act” from external triggers or user turns removes polling delays and allows reaction bounded only by inference time; essential for safety‑critical alerting.</li>
+<li><strong>Weighted loss</strong>: Without it, the overwhelming majority of silence steps push the model toward perpetual silence; the weighting ensures response and delegation signals are not diluted.</li>
+<li><strong>RL on stream‑level rewards</strong>: Token‑level SFT cannot capture the nuanced timing of a response (e.g., a reply one second late is penalized differently from a correct‑time reply); RL directly optimises the end‑to‑end interaction behavior.</li>
+<li><strong>Delegation protocol</strong>: Allows an 8B model to handle hard problems (math, video reasoning) by offloading them to a larger background model without freezing the real‑time loop; the model stays present and can field new turns while waiting.</li>
+<li><strong>AdaCodec</strong>: Streaming a video second‑by‑second with full per‑frame ViT tokens would inflate cost and latency; AdaCodec reduces predictable frames to ~16 tokens, keeping per‑step work small and proportional to scene change frequency.</li>
+<li><strong>Hierarchical memory + vLLM prefix reuse</strong>: Storing text summaries of past chunks allows the engine to prefetch a fixed KV‑cache prefix and only compute the newest frames, enabling sustained sub‑second latency over hours.</li>
+<li><strong>Pluggable I/O</strong>: Keeping ASR/TTS outside the model decouples the autonomous vision‑driven interaction core from speech modality choices, making the system adaptable to different languages and deployment preferences.</li>
+</ul>
+    </div>
+  </section>
+
+  <section id="evaluation" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0Z"/></svg>
+      Performance Evaluation
+    </h2>
+    
+    <div class="markdown-body">
+      <h3>Main Results</h3>
+<p>Human evaluation on six streaming scenarios (58 cases) against <a href="https://www.bytedance.com/en/doubao">Doubao</a> and <a href="https://gemini.google.com/">Gemini</a> in‑app video‑call assistants.</p>
+<p><strong>Overall win rates</strong>:
+- JoyAI-VL‑Interaction vs Doubao: <strong>77.6%</strong> win, 17.2% tie, 5.2% loss.
+- JoyAI-VL‑Interaction vs Gemini: <strong>87.9%</strong> win, 10.3% tie, 1.7% loss.</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>vs Doubao win rate</th>
+<th>vs Gemini win rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monitoring &amp; alerting</td>
+<td>100%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Real‑time counting</td>
+<td>70%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Real‑time translation</td>
+<td>80%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Time awareness</td>
+<td>(not explicitly reported, but competitive)</td>
+<td>50% (Gemini ties 40%, wins 10%)</td>
+</tr>
+<tr>
+<td>Live commentary &amp; guidance</td>
+<td>55.6%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Long‑horizon memory</td>
+<td>77.8%</td>
+<td>77.8%</td>
+</tr>
+</tbody>
+</table>
+<p>Largest margin appears on time‑critical tasks (monitoring, counting, translation), where turn‑based baselines structurally miss events or arrive late.</p>
+<h3>Ablation Studies</h3>
+<p>The paper does not report formal ablation experiments but discusses the importance of several design choices:
+- <strong>Weighted SFT loss</strong>: Prevents the silence‑dominated gradient from suppressing response and delegation actions.
+- <strong>RL stage</strong>: Improves timing precision; without it the model would speak at inappropriate moments or miss critical events.
+- <strong>Long‑horizon memory</strong>: Without the hierarchical memory, the model would forget events after a few hundred seconds; the memory allows answering questions about events far earlier in the stream.
+- <strong>AdaCodec</strong>: Without it, token cost would grow linearly with stream length, making real‑time deployment on long streams infeasible.
+- <strong>Delegation protocol</strong>: Removing delegation would force the small model to either answer complex questions poorly or block the interaction loop while processing them.
+- <strong>Pluggable ASR/TTS</strong>: Decoupling speech I/O from the model preserves the vision‑first reactive capability and allows easy adaptation to different speech engines.</p>
+<h3>Key Takeaways</h3>
+<ul>
+<li>An interaction model that internally decides when to act outperforms mature turn‑based products on vision‑driven, time‑critical tasks, even with far fewer parameters.</li>
+<li>Delegation enables a compact 8B model to leverage larger background models asynchronously, combining real‑time presence with heavy reasoning on demand.</li>
+<li>Open‑sourcing the model, training recipe, data, and full deployable system lowers the barrier for the community to explore and build real‑world streaming interaction.</li>
+</ul>
+    </div>
+  </section>
+
+  <section id="critique" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Critical Analysis
+    </h2>
+    <div class="markdown-body">
+      <p>The paper introduces JoyAI-VL-Interaction, an 8B vision-first model that proactively decides when to speak, stay silent, or delegate. While the system integration is impressive, the experimental validation is small-scale and lacks formal ablations. The comparisons against Doubao and Gemini are misleading due to built-in product limitations (auto-hangup, no delegation) that inflate win rates. Reproducibility is contingent on a future release date. Ethical risks from continuous monitoring are not addressed.</p>
+<ul>
+<li>
+<p><strong>[MEDIUM]</strong> No formal ablation studies are presented to isolate the contributions of weighted SFT loss, RL, long-horizon memory, AdaCodec, or delegation. The paper only discusses their importance qualitatively, making it impossible to assess the marginal benefit of each component.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The RL training uses 'answer-centered window sampling' to compress rollouts, but the details are vague and may bias the policy toward pre-identified answer windows, potentially failing on open-ended streams without a 'gold' window.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The training data relies heavily on synthetic pipelines (e.g., VLM‑generated multi-turn chat, rule‑based counting). Artifacts from these pipelines may lead to unrealistic interaction patterns and limit robustness on authentic, noisy real-world streams.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> The weighted SFT loss hyperparameters (wsilence_repeated=0.4, wresponse=1.5) are chosen without reporting any tuning or validation, reducing confidence in their optimality.</p>
+</li>
+<li>
+<p><strong>[HIGH]</strong> The paper does not address the concurrency problem: while the model is generating a long textual response (after emitting </response>), it may miss new visual input, contradicting the claimed continuous observation. The system design does not describe how ingestion and generation are interleaved.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The model relies on pluggable ASR for speech input, but the paper contains no analysis of robustness to ASR errors or latency, which can significantly impact real-time interaction decisions.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The RL reward function is described only at a high level (crediting correct timing, penalizing false alarms); insufficient detail is provided to reproduce the RL stage or verify its effectiveness.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> Baselines are limited to two closed commercial products (Doubao, Gemini). No comparison is made against any open-source streaming-video LLM or proactive interaction model, weakening claims of superiority within the research community.</p>
+</li>
+<li>
+<p><strong>[HIGH]</strong> The human evaluation uses only 58 cases across six scenarios, with no statistical significance tests, confidence intervals, or effect sizes reported, undermining the strong claim of large win‑rate margins.</p>
+</li>
+<li>
+<p><strong>[HIGH]</strong> Comparisons are structurally unfair: Doubao and Gemini are not designed for continuous monitoring and have session timeouts (5 min and ~2:15 min), directly causing 'losses' in long‑horizon memory cases. Delegation tasks are also impossible for the baselines, inflating JoyAI-VL-Interaction’s win rate.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> Inter‑rater reliability metrics (e.g., Cohen’s κ) are not reported despite the use of five raters, making the agreement claim ('high') unverifiable.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The evaluation metric converts ordinal ratings (good/fair/poor) to numeric scores and averages them across two axes, then uses these averages to declare win/tie/loss. This coarse quantization discards nuance and may not reflect true user preference.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> Emergent capabilities (shopping guidance, slide lecture) are illustrated with cherry‑picked case studies without any controlled quantitative evaluation, so the claim of generalisation remains anecdotal.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The paper does not discuss information loss in the hierarchical memory system; text‑based summaries may omit crucial visual details, and no analysis is given on how performance degrades over hours of streaming beyond the claimed two‑hour window.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The model is evaluated only on short, curated scenarios that may not represent long‑term, noisy, or unstructured real‑world deployments, limiting the generality of the conclusions.</p>
+</li>
+<li>
+<p><strong>[HIGH]</strong> All code, data, and model weights are promised to be released by June 20, 2026, which is after the paper’s submission. At the time of review, the work is not independently reproducible, and no verification of the release is possible.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> Critical details of the data construction pipeline (e.g., verifier agents, multi‑role agent orchestration) are not fully disclosed, hindering exact reproduction of the training corpus.</p>
+</li>
+<li>
+<p><strong>[HIGH]</strong> The paper does not address the ethical and societal risks of deploying a model that continuously watches a live camera feed, such as privacy violations, mass surveillance, or stalking, nor does it propose safeguards.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The delegation protocol enables the system to call external APIs or agents; no discussion is given about the risks of malicious instructions or unintended autonomous actions being carried out via this bridge.</p>
+</li>
+</ul>
+    </div>
+  </section>
+
+  <section id="related-papers" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/></svg>
+      Related Papers
+    </h2>
+    
+    
+    <div class="related-papers-list">
+      
+      <a href="https://arxiv.org/abs/Dispider" target="_blank" class="related-paper-item">
+        <span class="related-paper-title">Dispider: Enabling Video LLMs with Active Real-Time Interaction via Disentangled Perception, Decision, and Reaction</span>
+        <span class="related-paper-relevance">Dispider's disentangled perception-decision-reaction architecture directly informs JoyAI-VL-Interaction’s internal decision module for autonomous silence vs. response choices in live streams.</span>
+        <span class="related-paper-meta">
+          <span class="arxiv-id-label">arXiv:Dispider</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        </span>
+      </a>
+      
+      <a href="https://arxiv.org/abs/2505.11326" target="_blank" class="related-paper-item">
+        <span class="related-paper-title">Temporally-Grounded Language Generation: A Benchmark for Real-Time Vision-Language Models</span>
+        <span class="related-paper-relevance">TGLG benchmark and its VLM-TSI baseline supply the timing-aware (TRACE) evaluation methodology that JoyAI-VL-Interaction adopts to measure proactive responsiveness beyond accuracy metrics.</span>
+        <span class="related-paper-meta">
+          <span class="arxiv-id-label">arXiv:2505.11326</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        </span>
+      </a>
+      
+      <a href="https://arxiv.org/abs/StreamBridge" target="_blank" class="related-paper-item">
+        <span class="related-paper-title">StreamBridge: Turning Offline Video-LLMs into Proactive Streaming Assistants</span>
+        <span class="related-paper-relevance">StreamBridge's decayed memory buffers and decoupled activation models serve as the direct architectural precursor to JoyAI-VL-Interaction’s memory-efficient always-on streaming pipeline.</span>
+        <span class="related-paper-meta">
+          <span class="arxiv-id-label">arXiv:StreamBridge</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        </span>
+      </a>
+      
+      <a href="https://arxiv.org/abs/ESTP" target="_blank" class="related-paper-item">
+        <span class="related-paper-title">ESTP: Ego Streaming Proactive Video-LLM</span>
+        <span class="related-paper-relevance">ESTP's egocentric proactive streaming setup and dynamic compression techniques share the core 'respond at the right moment' objective and influence JoyAI-VL-Interaction’s high-frame-rate handling.</span>
+        <span class="related-paper-meta">
+          <span class="arxiv-id-label">arXiv:ESTP</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        </span>
+      </a>
+      
+      <a href="https://arxiv.org/abs/VideoLLM Knows When to Speak" target="_blank" class="related-paper-item">
+        <span class="related-paper-title">VideoLLM Knows When to Speak</span>
+        <span class="related-paper-relevance">This work's video-text duet formats for time-sensitive comprehension are cited by JoyAI-VL-Interaction as the key prior technique for learning when to speak versus stay silent.</span>
+        <span class="related-paper-meta">
+          <span class="arxiv-id-label">arXiv:VideoLLM Knows When to Speak</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        </span>
+      </a>
+      
+    </div>
+    
+  </section>
+
+  
+  <section id="cost-report" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      Generation Cost
+    </h2>
+    <div style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; margin-top: -0.5rem;">Generation Cost Breakdown</div>
+    
+    <div class="cost-dashboard">
+      <div class="cost-summary-card">
+        <div class="cost-summary-label">Total Cost</div>
+        <div class="cost-summary-value">$0.129258</div>
+        
+        <div class="cost-summary-sub">2 models</div>
+        <div class="cost-summary-badge">Multi-model</div>
+        
+      </div>
+      
+      <div class="cost-details-panel">
+        
+        <div class="cost-breakdown-grid">
+          
+          <div class="cost-detail-row">
+            <span class="detail-label">
+              <strong style="font-family: monospace; color: var(--text-main);">deepseek-v4-pro</strong>
+              <span class="detail-price" style="margin-left: 0.5rem;">DeepSeek</span>
+            </span>
+            <span class="detail-value">
+              <strong>241754</strong> tok
+              <span class="detail-price">$0.110848</span>
+            </span>
+          </div>
+          
+          <div class="cost-detail-row">
+            <span class="detail-label">
+              <strong style="font-family: monospace; color: var(--text-main);">grok-4.3</strong>
+              <span class="detail-price" style="margin-left: 0.5rem;">Grok</span>
+            </span>
+            <span class="detail-value">
+              <strong>14114</strong> tok
+              <span class="detail-price">$0.018410</span>
+            </span>
+          </div>
+          
+          <div class="cost-detail-row total-row">
+            <span class="detail-label">Total Tokens</span>
+            <span class="detail-value">
+              <strong>255868</strong>
+            </span>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+
+  <footer class="footer">
+    <div>
+      Generated by <strong>ppagent</strong> on 2026-06-24 00:12
+    </div>
+    <div>
+      Model: <code>deepseek-v4-pro</code>
+    </div>
+  </footer>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Theme setup and control
+    const toggleBtn = document.getElementById("themeToggleBtn");
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const initialTheme = savedTheme || systemTheme;
+    
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    }
+
+    // Active navigation highlight on scroll
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link");
+    
+    function highlightNav() {
+      let scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+      const offset = 180;
+      
+      sections.forEach(section => {
+        const top = section.offsetTop - offset;
+        const height = section.offsetHeight;
+        const id = section.getAttribute("id");
+        
+        if (scrollPos >= top && scrollPos < top + height) {
+          navLinks.forEach(link => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === "#" + id) {
+              link.classList.add("active");
+            }
+          });
+        }
+      });
+    }
+    
+    window.addEventListener("scroll", highlightNav);
+    highlightNav();
+
+    // Custom CSS Badges for Critique Items starting with severity indicator
+    const critiqueCard = document.getElementById("critique");
+    if (critiqueCard) {
+      const listItems = critiqueCard.getElementsByTagName("li");
+      for (let li of listItems) {
+        let html = li.innerHTML;
+        // Check if there is an bracket severity tag and style it
+        html = html.replace(/\[HIGH\]/gi, '<span class="badge badge-high">HIGH</span>');
+        html = html.replace(/\[MEDIUM\]/gi, '<span class="badge badge-medium">MEDIUM</span>');
+        html = html.replace(/\[LOW\]/gi, '<span class="badge badge-low">LOW</span>');
+        li.innerHTML = html;
+      }
+    }
+
+    // Add Copy Button to Code Blocks
+    document.querySelectorAll("pre").forEach(pre => {
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+      
+      const btn = document.createElement("button");
+      btn.className = "copy-code-btn";
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+      btn.setAttribute("aria-label", "Copy code");
+      
+      wrapper.appendChild(btn);
+      
+      btn.addEventListener("click", () => {
+        const code = pre.querySelector("code")?.innerText || pre.innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success)"><polyline points="20 6 9 17 4 12"/></svg>`;
+          setTimeout(() => {
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+          }, 2000);
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>
