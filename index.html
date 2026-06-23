@@ -425,7 +425,7 @@
         <header>
             <div class="logo" id="headerLogo">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18(missing: 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
                 Paper Readings
             </div>
@@ -461,8 +461,9 @@
 
             <div class="papers-grid" id="papersGrid">
                 
-                <!-- Card 1: JoyAI-VL-Interaction -->
-                <article class="paper-card" data-title="joyai-vl-interaction: real-time vision-language interaction intelligence" data-authors="dingyu yao, junhao zhou, chenxu yang, chuanyu qin" data-keywords="interaction model, streaming video, proactive response, delegation">
+                
+                <!-- Card: JoyAI-VL-Interaction: Real-Time Vision-Language Interaction Intelligence -->
+                <article class="paper-card" data-title="joyai-vl-interaction: real-time vision-language interaction intelligence" data-authors="dingyu yao, junhao zhou, chenxu yang, ..." data-keywords="interaction model, streaming video, proactive response, delegation, adacodec, time awareness, long-horizon memory, vl-interaction">
                     <div>
                         <div class="card-header">
                             <span class="paper-tag">method</span>
@@ -474,7 +475,7 @@
                             </span>
                         </div>
                         <h3 class="paper-title">JoyAI-VL-Interaction: Real-Time Vision-Language Interaction Intelligence</h3>
-                        <p class="paper-tldr">An open-source 8B vision-language interaction model that proactively decides when to speak, stay silent, or delegate tasks based on a continuous video stream. It is paired with a complete deployable system enabling real-time streaming interaction.</p>
+                        <p class="paper-tldr">JoyAI-VL-Interaction is an open-source 8B vision-language interaction model that proactively decides when to speak, stay silent, or delegate tasks based on a continuous video stream. It is paired with a complete deployable system enabling real-time streaming interaction. Human evaluators prefer it over Doubao (77.6% win rate) and Gemini (87.9% win rate) on time-critical vision-driven tasks.</p>
                     </div>
                     
                     <div class="paper-meta">
@@ -488,21 +489,24 @@
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                             </svg>
-                            <span class="keywords-list">proactive, streaming, delegation</span>
+                            <span class="keywords-list">interaction model, streaming video, proactive response, delegation, AdaCodec, time awareness, long-horizon memory, VL-interaction</span>
                         </div>
                         
                         <div class="card-actions">
-                            <a href="./papers/26-06-JoyAI-VL-Interaction-Real-Time-Vision-Language-Interaction-Intelligence/report.html" class="btn btn-primary" id="viewReportJoyAI">
+                            <a href="./papers/26-06-JoyAI-VL-Interaction-Real-Time-Vision-Language-Interaction-Intelligence/report.html" class="btn btn-primary">
                                 Read Report
                             </a>
-                            <a href="https://arxiv.org/abs/2606.14777" target="_blank" class="btn btn-secondary" id="arxivJoyAI">
+                            
+                            <a href="https://arxiv.org/abs/2606.14777" target="_blank" class="btn btn-secondary">
                                 arXiv
                             </a>
+                            
                         </div>
                     </div>
                 </article>
+                
 
-                <!-- Empty State -->
+                <!-- Empty State for JS searching -->
                 <div class="empty-state" id="emptyState">
                     <h3>No reports found</h3>
                     <p>Try searching for different keywords or check back later.</p>
