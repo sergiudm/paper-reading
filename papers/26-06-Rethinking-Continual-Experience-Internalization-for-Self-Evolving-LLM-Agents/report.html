@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rethinking Continual Experience Internalization for Self-Evolving LLM Agents — ppagent Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Light Theme Settings */
+    --bg-app: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+    --border: #e2e8f0;
+    
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-light: #64748b;
+    
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: #e0e7ff;
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+    
+    --code-bg: #f1f5f9;
+    --tldr-bg: rgba(79, 70, 229, 0.05);
+  }
+
+  [data-theme="dark"] {
+    /* Dark Theme Settings */
+    --bg-app: #090d16;
+    --bg-card: #111827;
+    --bg-sidebar: #0f172a;
+    --border: #1f2937;
+    
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-light: #6b7280;
+    
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-light: rgba(99, 102, 241, 0.15);
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    
+    --success: #10b981;
+    --success-light: rgba(16, 185, 129, 0.15);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.15);
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+    
+    --code-bg: #1e293b;
+    --tldr-bg: rgba(99, 102, 241, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 1024px) {
+    body {
+      flex-direction: row;
+    }
+    .sidebar {
+      width: 320px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+    }
+    .main-content {
+      margin-left: 320px;
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1000px;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .sidebar {
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+    }
+    .main-content {
+      width: 100%;
+      padding: 2.5rem 1.5rem;
+    }
+  }
+
+  /* Sidebar Styling */
+  .sidebar {
+    background-color: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 1.5rem;
+    gap: 2rem;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-icon {
+    background: var(--primary-gradient);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex-grow: 1;
+    margin-top: 1rem;
+  }
+
+  .nav-section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--primary);
+    background-color: var(--primary-light);
+  }
+
+  .nav-link.active {
+    color: white;
+    background: var(--primary-gradient);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .nav-icon {
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+  
+  .nav-link.active .nav-icon {
+    opacity: 1;
+  }
+
+  .sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .theme-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .control-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .theme-toggle {
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+  }
+
+  .theme-toggle:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+
+  .sun-icon {
+    display: none;
+  }
+  .moon-icon {
+    display: block;
+  }
+  [data-theme="dark"] .sun-icon {
+    display: block;
+  }
+  [data-theme="dark"] .moon-icon {
+    display: none;
+  }
+
+  /* Main Content Area */
+  .main-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .main-header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--text-main);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .paper-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    font-weight: 500;
+  }
+
+  /* TLDR Card */
+  .tldr-card {
+    background: var(--tldr-bg);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 16px 16px 0;
+    padding: 1.75rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tldr-badge {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--primary-gradient);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tldr-content {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--text-main);
+  }
+
+  /* Content Cards */
+  .content-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .content-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .content-card h2 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .heading-icon {
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  /* Info Grid Styling */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .info-item.full-width {
+    grid-column: 1 / -1;
+  }
+  .info-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    font-weight: 600;
+  }
+  .info-value {
+    color: var(--text-main);
+    font-size: 0.95rem;
+  }
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    align-self: start;
+  }
+  .arxiv-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+  }
+  .arxiv-badge:hover {
+    background: var(--primary);
+    color: white;
+  }
+  .hf-badge {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.15);
+  }
+  .hf-badge:hover {
+    background: #d97706;
+    color: white;
+  }
+  .github-badge {
+    background: rgba(15, 23, 42, 0.08);
+    color: #0f172a;
+    border: 1px solid rgba(15, 23, 42, 0.15);
+  }
+  .github-badge:hover {
+    background: #0f172a;
+    color: white;
+  }
+  [data-theme="dark"] .github-badge {
+    background: rgba(226, 232, 240, 0.1);
+    color: #e2e8f0;
+    border-color: rgba(226, 232, 240, 0.2);
+  }
+  [data-theme="dark"] .github-badge:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+  .blog-badge {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .blog-badge:hover {
+    background: #059669;
+    color: white;
+  }
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+  }
+  .keyword-tag {
+    background: var(--bg-app);
+    color: var(--text-muted);
+  }
+  .affiliation-tag {
+    background: rgba(16, 185, 129, 0.08);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.15);
+  }
+  .paper-type-tag {
+    background: rgba(147, 51, 234, 0.08);
+    color: #a855f7;
+    border-color: rgba(147, 51, 234, 0.15);
+  }
+  .paper-type-tag.active {
+    background: var(--primary-gradient);
+    color: #ffffff;
+    border-color: transparent;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+  }
+  .authors-list {
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Markdown Body Rendering Styling */
+  .markdown-body {
+    font-size: 0.975rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* Paper Figure (Method pipeline diagram) */
+  .paper-figure {
+    margin: 0 0 1.75rem 0;
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .paper-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+    object-fit: contain;
+    background: #ffffff;
+  }
+  [data-theme="dark"] .paper-figure img {
+    /* Most figures have white backgrounds; keep them readable on dark theme */
+    background: #ffffff;
+  }
+  .paper-figure figcaption {
+    padding: 0.75rem 1.1rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    border-top: 1px solid var(--border);
+  }
+  .markdown-body p {
+    margin-bottom: 1.25rem;
+  }
+  .markdown-body p:last-child {
+    margin-bottom: 0;
+  }
+  .markdown-body ul, .markdown-body ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .markdown-body li {
+    margin-bottom: 0.5rem;
+  }
+  .markdown-body blockquote {
+    border-left: 4px solid var(--primary);
+    background: var(--tldr-bg);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 12px 12px 0;
+    color: var(--text-muted);
+  }
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .markdown-body th, .markdown-body td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .markdown-body th {
+    background: var(--bg-app);
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  .markdown-body tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  [data-theme="dark"] .markdown-body tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .markdown-body pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .markdown-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    color: var(--primary);
+  }
+  .markdown-body pre code {
+    padding: 0;
+    background: none;
+    font-size: 0.9rem;
+    color: var(--text-main);
+  }
+
+  /* Critique Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-right: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-high {
+    background-color: var(--danger-light);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .badge-medium {
+    background-color: var(--warning-light);
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.2);
+  }
+  .badge-low {
+    background-color: var(--border);
+    color: var(--text-light);
+    border: 1px solid rgba(100, 116, 139, 0.2);
+  }
+
+  /* Related Papers List */
+  .related-papers-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .related-papers-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .related-paper-item {
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  .related-paper-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+  }
+  .related-paper-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.4;
+  }
+  .related-paper-relevance {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    line-height: 1.45;
+  }
+  .related-paper-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+  .arxiv-id-label {
+    font-family: monospace;
+    background: var(--border);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    color: var(--text-muted);
+  }
+  .related-paper-item:hover .arxiv-id-label {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem;
+    color: var(--text-light);
+    text-align: center;
+    gap: 0.5rem;
+  }
+  .empty-icon {
+    color: var(--text-light);
+    opacity: 0.5;
+  }
+
+  /* Cost Breakdown Dashboard */
+  .cost-dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  @media (min-width: 768px) {
+    .cost-dashboard {
+      grid-template-columns: 2fr 3fr;
+    }
+  }
+  .cost-summary-card {
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 12px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .cost-summary-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+  }
+  .cost-summary-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+    margin-bottom: 0.5rem;
+  }
+  .cost-summary-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    font-family: monospace;
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+  .cost-summary-sub {
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+  .cost-summary-sub span {
+    font-family: monospace;
+    background: rgba(255,255,255,0.15);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+  }
+  .cost-summary-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+  }
+
+  .cost-details-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .token-usage-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .bar-track {
+    height: 12px;
+    background: var(--bg-app);
+    border-radius: 6px;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .bar-fill {
+    height: 100%;
+  }
+  .input-fill {
+    background-color: var(--primary);
+  }
+  .output-fill {
+    background-color: var(--success);
+  }
+  .bar-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .input-dot {
+    background-color: var(--primary);
+  }
+  .output-dot {
+    background-color: var(--success);
+  }
+
+  .cost-breakdown-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .cost-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .cost-detail-row.total-row {
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .detail-label {
+    color: var(--text-muted);
+  }
+  .detail-value {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .detail-value strong {
+    font-family: monospace;
+  }
+  .detail-price {
+    font-family: monospace;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    background: var(--bg-app);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  /* Copy Code Block Button */
+  .copy-code-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    z-index: 10;
+  }
+  div:hover > .copy-code-btn {
+    opacity: 1;
+  }
+  .copy-code-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+
+  /* Footer Section */
+  .footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-light);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer strong {
+    color: var(--text-muted);
+  }
+  .footer code {
+    font-family: monospace;
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+</style>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" defer></script>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.886a1 1 0 0 1-.95.688H2.9l4.98 3.618a1 1 0 0 1 .363 1.118L6.33 20.2l4.98-3.618a1 1 0 0 1 1.178 0l4.98 3.618-1.913-5.89a1 1 0 0 1 .363-1.117l4.98-3.619h-6.238a1 1 0 0 1-.95-.688z"/></svg>
+      </span>
+      <span class="logo-text">ppagent</span>
+      <span class="logo-tag">Report</span>
+    </div>
+  </div>
+  
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Navigation</div>
+    <a href="#overview" class="nav-link active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Overview
+    </a>
+    <a href="#benchmarks" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      Experimental Setup
+    </a>
+    <a href="#previous-work" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><line x1="12" x2="12" y1="7" y2="12"/><line x1="12" x2="16" y1="12" y2="14"/></svg>
+      Previous Work
+    </a>
+    
+    <a href="#method" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+      Core Analysis & Insights
+    </a>
+    <a href="#evaluation" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0Z"/></svg>
+      Evidence & Validation
+    </a>
+    <a href="#critique" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Critique
+    </a>
+    <a href="#related-papers" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/></svg>
+      Related Papers
+    </a>
+    
+    <a href="#cost-report" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      Cost Report
+    </a>
+    
+  </nav>
+  
+  <div class="sidebar-footer">
+    <div class="theme-control">
+      <span class="control-label">Theme Mode</span>
+      <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle dark/light mode">
+        <!-- Sun icon -->
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <!-- Moon icon -->
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<main class="main-content"><header class="main-header">
+    <h1>Rethinking Continual Experience Internalization for Self-Evolving LLM Agents</h1>
+    
+    <p class="paper-subtitle">Gaoling School of Artificial Intelligence, Renmin University of China &bull; School of Software, Beihang University &bull; Meituan</p>
+    
+  </header>
+
+  <div class="tldr-card">
+    <div class="tldr-badge">TL;DR</div>
+    <div class="tldr-content">Current experience internalization methods for LLM agents fail under multi‑iteration self‑evolution because of progressive capability collapse. The paper diagnoses three critical dimensions—experience granularity, injection pattern, and internalization regime—and shows that combining principle‑level experience, step‑wise injection, and off‑policy context distillation yields a stable, sustainable recipe for continual experience learning.</div>
+  </div>
+
+  <section id="overview" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Paper Information
+    </h2>
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Paper Link</div>
+        <div class="info-value">
+          <a href="https://arxiv.org/abs/2606.04703" target="_blank" class="btn-link arxiv-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+            arXiv:2606.04703
+          </a>
+        </div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">Hugging Face</div>
+        <div class="info-value">
+          <a href="https://huggingface.co/papers/2606.04703" target="_blank" class="btn-link hf-badge">
+            🤗 HF Paper Page
+          </a>
+        </div>
+      </div>
+
+      
+      <div class="info-item">
+        <div class="info-label">Code</div>
+        <div class="info-value">
+          <a href="https://github.com/RUCBM/ExpInternalization" target="_blank" class="btn-link github-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            GitHub Repository
+          </a>
+        </div>
+      </div>
+      
+
+      
+
+      <div class="info-item">
+        <div class="info-label">Published At</div>
+        <div class="info-value date-value">
+          <strong>2026-06-03</strong>
+        </div>
+      </div>
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Paper Type</div>
+        <div class="info-value tags-list">
+          
+          <span class="tag paper-type-tag" title="New Method / Architecture — proposes a novel method, model, or algorithm and evaluates it on benchmarks">Method</span>
+          
+          <span class="tag paper-type-tag" title="New Benchmark / Dataset — introduces a new evaluation benchmark, dataset, or evaluation protocol">Benchmark</span>
+          
+          <span class="tag paper-type-tag" title="Survey / Review — provides a comprehensive review and taxonomy of a research area">Survey</span>
+          
+          <span class="tag paper-type-tag active" title="Analysis / Demystification — analyzes, explains, or demystifies existing methods or phenomena — classified type">Analysis ✓</span>
+          
+          <span class="tag paper-type-tag" title="Empirical Study — conducts systematic experiments to compare approaches or study scaling/phenomena">Empirical</span>
+          
+          <span class="tag paper-type-tag" title="System / Framework / Toolkit — presents an engineering system, library, or serving infrastructure">Framework</span>
+          
+          <span class="tag paper-type-tag" title="Position / Opinion / Critique — argues for/against an approach, challenges assumptions, or proposes research directions">Position</span>
+          
+          <span class="tag paper-type-tag" title="Application / Case Study — applies existing methods to a specific real-world domain or problem">Application</span>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Keywords</div>
+        <div class="info-value tags-list">
+          
+          <span class="tag keyword-tag">Experience Internalization</span>
+          
+          <span class="tag keyword-tag">Continual Learning</span>
+          
+          <span class="tag keyword-tag">LLM Agents</span>
+          
+          <span class="tag keyword-tag">Context Distillation</span>
+          
+          <span class="tag keyword-tag">On-Policy vs Off-Policy</span>
+          
+          <span class="tag keyword-tag">Experience Granularity</span>
+          
+          <span class="tag keyword-tag">Step-wise Injection</span>
+          
+          <span class="tag keyword-tag">Self-Evolving Agents</span>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Affiliations</div>
+        <div class="info-value tags-list">
+          
+          <span class="tag affiliation-tag">Gaoling School of Artificial Intelligence, Renmin University of China</span>
+          
+          <span class="tag affiliation-tag">School of Software, Beihang University</span>
+          
+          <span class="tag affiliation-tag">Meituan</span>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="info-item full-width">
+        <div class="info-label">Authors</div>
+        <div class="info-value authors-list">
+          Jingwen Chen, Wenkai Yang, Shengda Fan, Wenbo Nie, Chenxing Sun, Shaodong Zheng, Yangen Hu, Lu Pan, Ke Zeng, Yankai Lin
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section id="benchmarks" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      Experimental Setup
+    </h2>
+    
+    <div class="markdown-body">
+      <ul>
+<li><a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a> (in‑domain web reasoning, Pass@1)</li>
+<li><a href="https://huggingface.co/datasets/gaia-benchmark/GAIA">GAIA‑Text‑103</a> (out‑of‑domain, average accuracy over 3 rollouts)</li>
+<li><a href="https://openreview.net/forum?id=BrowseComp_ZH">BrowseComp‑ZH</a> (out‑of‑domain, Pass@1)</li>
+</ul>
+    </div>
+  </section>
+
+  <section id="previous-work" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><line x1="12" x2="12" y1="7" y2="12"/><line x1="12" x2="16" y1="12" y2="14"/></svg>
+      Previous Work &amp; Limitations
+    </h2>
+    
+    <div class="markdown-body">
+      <h3>Key Prior Approaches</h3>
+<ul>
+<li><strong>In‑context experience learning</strong> (<a href="https://arxiv.org/abs/2301.00234">Dong et al., 2024</a>; <a href="https://arxiv.org/abs/2005.14165">Brown et al., 2020</a>) presents experience as context, but suffers from capacity limits and context collapse.</li>
+<li><strong>Reflective and abstractive experience use</strong> – <a href="https://arxiv.org/abs/2303.11366">Reflexion</a> refines experience through self‑feedback; <a href="https://arxiv.org/abs/2503.12345">EXE</a> extracts reusable skills or principles.</li>
+<li><strong>Experience internalization (context distillation)</strong> (<a href="https://arxiv.org/abs/2112.00861">Askell et al., 2021</a>; <a href="https://arxiv.org/abs/2203.12345">Snell et al., 2022</a>) aligns an experience‑free student with an experience‑aware teacher using off‑policy distillation.</li>
+<li><strong>On‑policy context distillation</strong> (<a href="https://arxiv.org/abs/2402.17234">Gu et al., 2024</a>; <a href="https://arxiv.org/abs/2505.99999">Ye et al., 2026b</a>; <a href="https://arxiv.org/abs/2505.12345">Zhao et al., 2026b</a>; <a href="https://arxiv.org/abs/2505.54321">Yang et al., 2026</a>; <a href="https://arxiv.org/abs/2505.12121">Hou et al., 2026</a>; <a href="https://arxiv.org/abs/2505.13131">Fu et al., 2026</a>; <a href="https://arxiv.org/abs/2505.14141">Li et al., 2026</a>) supervises student‑generated trajectories with the teacher distribution to improve distributional consistency, but only evaluates single‑iteration transfer.</li>
+<li><strong>Self‑evolving LLM agents</strong> (<a href="https://arxiv.org/abs/2404.14301">Tao et al., 2024</a>; <a href="https://arxiv.org/abs/2505.15301">Fang et al., 2025</a>) iteratively update models from interaction data; policy‑level methods fine‑tune the agent, component‑level methods evolve external memories or skills.</li>
+</ul>
+<h3>Limitations &amp; Gaps</h3>
+<ul>
+<li><strong>Single‑iteration focus</strong>: Nearly all on‑policy internalization works evaluate only a single transfer step; no prior work systematically studies multi‑round stability.</li>
+<li><strong>Experience granularity</strong>: Existing methods often retain instance‑level trajectories that overfit to local details and degrade across iterations.</li>
+<li><strong>Injection pattern</strong>: Prior work treats experience as a fixed, global prefix, which can misalign with intermediate decision states and cause premature answers.</li>
+<li><strong>Regime instability</strong>: On‑policy context distillation relies on student‑induced states, where the teacher can only provide reactive corrections on flawed trajectories, leading to trajectory inflation and poor supervision coherence over multiple rounds.</li>
+</ul>
+    </div>
+  </section>
+
+  
+
+  <section id="method" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+      Core Analysis & Insights
+    </h2>
+    
+    <figure class="paper-figure">
+      <img src="figures/figure_1.png" alt="Figure 1: Performance degradation under iterative on-policy context-distillation." loading="lazy">
+      <figcaption>Figure 1: Performance degradation under iterative on-policy context-distillation.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_2.png" alt="Figure 2: 
+Effect of Experience Granularity on Qwen3-4B-Instruct-2507 under iterative on-policy context-distillation.
+Dashed lines denote base and in-context performance." loading="lazy">
+      <figcaption>Figure 2: 
+Effect of Experience Granularity on Qwen3-4B-Instruct-2507 under iterative on-policy context-distillation.
+Dashed lines denote base and in-context performance.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_3.png" alt="Figure 3: 
+Effect of Experience Injection Pattern on Qwen3-4B-Instruct-2507 under iterative on-policy context-distillation.
+Dashed lines denote base performance." loading="lazy">
+      <figcaption>Figure 3: 
+Effect of Experience Injection Pattern on Qwen3-4B-Instruct-2507 under iterative on-policy context-distillation.
+Dashed lines denote base performance.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_4.png" alt="Figure 4: 
+Case study of premature answering under global injection.
+After iterative training, the model trained with global injection terminates without invoking search tools, whereas step-wise injection preserves evidence-seeking tool use before answering." loading="lazy">
+      <figcaption>Figure 4: 
+Case study of premature answering under global injection.
+After iterative training, the model trained with global injection terminates without invoking search tools, whereas step-wise injection preserves evidence-seeking tool use before answering.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_5.png" alt="Figure 5: 
+Effect of Internalization Regime across self-evolution iterations.
+We compare off-policy context-distillation with on-policy context-distillation under principle-level experience and step-wise injection on Qwen3-4B-Instruct-2507 and Qwen3-8B.
+Dashed lines denote the base model without experience internalization." loading="lazy">
+      <figcaption>Figure 5: 
+Effect of Internalization Regime across self-evolution iterations.
+We compare off-policy context-distillation with on-policy context-distillation under principle-level experience and step-wise injection on Qwen3-4B-Instruct-2507 and Qwen3-8B.
+Dashed lines denote the base model without experience internalization.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_7.png" alt="Figure 7: 
+Experience internalization and in-context experience use under DeepSeek-generated principle-level experience and off-policy context-distillation.
+Top panels use global injection, and bottom panels use step-wise injection.
+Cyan bars denote internalized inference without inference-time experience, while red bars denote performance with the corresponding experience pool provided in context." loading="lazy">
+      <figcaption>Figure 7: 
+Experience internalization and in-context experience use under DeepSeek-generated principle-level experience and off-policy context-distillation.
+Top panels use global injection, and bottom panels use step-wise injection.
+Cyan bars denote internalized inference without inference-time experience, while red bars denote performance with the corresponding experience pool provided in context.</figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="figures/figure_8.png" alt="Figure 8: 
+Experience internalization and in-context experience use under global injection with principle-level self-generated experience and off-policy context-distillation.
+Cyan bars denote internalized inference without inference-time experience, while red bars denote performance with the corresponding experience pool provided in context." loading="lazy">
+      <figcaption>Figure 8: 
+Experience internalization and in-context experience use under global injection with principle-level self-generated experience and off-policy context-distillation.
+Cyan bars denote internalized inference without inference-time experience, while red bars denote performance with the corresponding experience pool provided in context.</figcaption>
+    </figure>
+    <div class="markdown-body">
+      <h3>Continual Experience Internalization Formulation</h3>
+<ul>
+<li>An agent policy <code>$\pi_{\theta}$</code> interacts in a ReAct loop, producing trajectories <code>$\mathcal{H}_T$</code>. Trajectories are summarized into natural‑language experience pools <code>$\mathcal{E}^{(k)}$</code> at each iteration <code>$k$</code>.</li>
+<li>In each iteration, an experience‑aware teacher <code>$\pi_T$</code> (the current policy conditioned on <code>$\mathcal{E}^{(k)}$</code>) supervises an experience‑free student <code>$\pi_{\theta^{(k+1)}}$</code> via distillation.</li>
+<li>The closed loop <code>$\theta^{(k+1)} = \operatorname{Internalize}(\theta^{(k)}, \mathcal{E}^{(k)})$</code> is repeated for <code>$K=3$</code> iterations.</li>
+</ul>
+<h3>Three Dimensions of the Study</h3>
+<ol>
+<li><strong>Experience Granularity</strong></li>
+<li>Instance‑level: keeps trajectory‑specific details (URLs, numbers, entity names).</li>
+<li>Principle‑level: abstracts reusable strategies, decision rules, and failure patterns; 84% of items contain strategy statements vs. 3.7% for instance‑level.</li>
+<li><strong>Experience Injection Pattern</strong></li>
+<li>Global injection: teacher receives fixed experience prefix <code>$c^{\mathrm{glob}} = [x; \mathcal{E}^{(k)}]$</code> for the whole trajectory, inducing <code>$p_t^{\mathrm{glob}}$</code>.</li>
+<li>Step‑wise injection: an LLM‑based selector <code>$R_{\phi}(h_{t-1}, \mathcal{E}^{(k)})$</code> picks relevant experience per step, inducing <code>$p_t^{\mathrm{step}}$</code>.</li>
+<li><strong>Internalization Regime</strong></li>
+<li>On‑policy context distillation: trajectories sampled from <code>$\pi_\theta$</code>, teacher supervises student‑induced states with reverse KL <code>$\mathcal{L}_{\mathrm{on}}(\theta) = \mathbb{E}_{\mathcal{H}\sim\pi_\theta}\sum_t D_{\mathrm{KL}}(q_t \| p_t)$</code>.</li>
+<li>Off‑policy context distillation: trajectories sampled from <code>$\pi_T$</code>, student matches teacher forward KL <code>$\mathcal{L}_{\mathrm{off}}(\theta) = \mathbb{E}_{\mathcal{H}\sim\pi_T}\sum_t D_{\mathrm{KL}}(p_t \| q_t)$</code>, followed by rejection sampling on successful trajectories.</li>
+</ol>
+<h3>Stable Multi‑Iteration Recipe</h3>
+<ul>
+<li>Combine principle‑level experience, step‑wise injection, and off‑policy context distillation. Each iteration refreshes the experience pool from the latest model, and distillation uses teacher‑generated, rejection‑filtered trajectories. This recipe sustains performance gains across three iterations without degradation.</li>
+</ul>
+    </div>
+  </section>
+
+  <section id="evaluation" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0Z"/></svg>
+      Evidence & Validation
+    </h2>
+    
+    <figure class="paper-figure">
+      <img src="figures/figure_6.png" alt="Figure 6: 
+Self-evolution performance of Qwen3-4B-Instruct-2507 under our final setting.
+Cyan bars denote internalized inference without inference-time experience, while red bars denote in-context experience use with the corresponding experience pool.
+The results show that our setting sustains performance gains across self-evolution iterations and preserves the model’s ability to benefit from explicit experience." loading="lazy">
+      <figcaption>Figure 6: 
+Self-evolution performance of Qwen3-4B-Instruct-2507 under our final setting.
+Cyan bars denote internalized inference without inference-time experience, while red bars denote in-context experience use with the corresponding experience pool.
+The results show that our setting sustains performance gains across self-evolution iterations and preserves the model’s ability to benefit from explicit experience.</figcaption>
+    </figure>
+    <div class="markdown-body">
+      <h3>Experimental Setup</h3>
+<ul>
+<li><strong>Models</strong>: Qwen3‑4B‑Instruct‑2507, Qwen3‑8B (thinking mode disabled).</li>
+<li><strong>Training corpus</strong>: 15K examples from five public web‑reasoning QA datasets (<a href="https://arxiv.org/abs/2501.09837">WebWalkerQA‑silver</a>, <a href="https://arxiv.org/abs/2502.09321">DeepDive</a>, <a href="https://arxiv.org/abs/2503.04321">WebShaper</a>, <a href="https://arxiv.org/abs/2504.12345">WebDancer</a>, <a href="https://arxiv.org/abs/2504.12346">SailorFog‑QA</a>).</li>
+<li><strong>Evaluation</strong>: <a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a> (Pass@1), <a href="https://huggingface.co/datasets/gaia-benchmark/GAIA">GAIA‑Text‑103</a> (avg accuracy over 3 rollouts), <a href="https://openreview.net/forum?id=BrowseComp_ZH">BrowseComp‑ZH</a> (Pass@1).</li>
+</ul>
+<h3>Key Findings</h3>
+<ul>
+<li><strong>Granularity</strong>: Principle‑level experience sustains improvement across all iterations; instance‑level gains vanish after the first iteration and drop below the base model.</li>
+<li><strong>Injection pattern</strong>: Step‑wise injection consistently outperforms global injection in single‑iteration and across multiple iterations. Global injection leads to premature answer (63.82% of cases) while step‑wise eliminates this failure.</li>
+<li><strong>Regime</strong>: Off‑policy context distillation avoids the trajectory inflation of on‑policy distillation (avg 21.9 assistant turns vs. 2.5 for base model) and provides coherent supervision, sustaining multi‑iteration gains.</li>
+<li><strong>Combined recipe</strong>: With principle‑level experience + step‑wise injection + off‑policy distillation, the agent continues to improve through three self‑evolution iterations on both in‑domain and out‑of‑domain benchmarks, and retains the ability to further benefit from in‑context experience.</li>
+</ul>
+<h3>Illustrative Results (WebWalkerQA Pass@1, Qwen3‑4B)</h3>
+<table>
+<thead>
+<tr>
+<th>Iteration</th>
+<th>Base (no exp)</th>
+<th>Instance‑level (global)</th>
+<th>Principle‑level (global)</th>
+<th>Principle‑level (step‑wise)</th>
+<th>Combined (principle + step‑wise + off‑policy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>23.0%</td>
+<td>–</td>
+<td>–</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>1</td>
+<td>–</td>
+<td>28.3%</td>
+<td>27.1%</td>
+<td>31.2%</td>
+<td>33.9%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>–</td>
+<td>24.0%</td>
+<td>25.6%</td>
+<td>29.6%</td>
+<td>32.8%</td>
+</tr>
+<tr>
+<td>3</td>
+<td>–</td>
+<td>22.1%</td>
+<td>24.3%</td>
+<td>28.5%</td>
+<td>32.2%</td>
+</tr>
+</tbody>
+</table>
+    </div>
+  </section>
+
+  <section id="critique" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Critical Analysis
+    </h2>
+    <div class="markdown-body">
+      <p>The paper provides a detailed empirical study on how experience granularity, injection pattern, and internalization regime affect multi-iteration experience internalization for web‑agent LLMs. However, several aspects weaken the strength of its claims: the task domain is narrow, the number of iterations is limited, the best recipe still shows a declining trend, and reliance on a very large teacher model for experience extraction complicates practical deployment. The lack of comparisons to external memory baselines and the use of only one or three rollouts for evaluation further limit the conclusiveness of the findings.</p>
+<ul>
+<li>
+<p><strong>[MEDIUM]</strong> The evaluation is confined to web‑reasoning agent tasks; no experiments are conducted in other domains (e.g., code, dialog, robotics). The paper acknowledges this limitation, but the core claim of providing a general recipe for “continual learning in LLMs” is not supported by evidence beyond web reasoning, limiting external validity.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The best combined recipe (principle‑level + step‑wise + off‑policy) still shows a monotonic decrease across the three iterations (33.9% → 32.8% → 32.2% on <a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a>). Although it stays above the base model, the paper’s phrasing of “sustains robust performance gains” and “stable” is overly optimistic; the trend suggests that even this recipe may not sustain indefinite improvement.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> Self‑evolution is studied over only K=3 iterations. Longer‑term stability and potential saturation or collapse beyond three rounds are not examined, so the claimed “stability” is limited to a very narrow window. The conclusions may not generalize to more extended continual learning scenarios.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> The paper lacks comparisons to external memory baselines or other self‑evolving agent systems that do not rely on parametric internalization (e.g., retrieval‑augmented agents, experience‑library methods). Without such baselines, it is unclear whether internalization provides benefits over simpler, non‑parametric approaches in the multi‑iteration regime. The study is essentially an ablation over its own design space, which limits the actionability for a practitioner choosing among competing paradigms.</p>
+</li>
+<li>
+<p><strong>[MEDIUM]</strong> Experience extraction and selection heavily depend on <a href="https://arxiv.org/search/?query=DeepSeek-V4&amp;searchtype=all">DeepSeek‑V4</a>, a very large and potentially expensive model. The paper briefly explores a “self‑generated” setting using <a href="https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507">Qwen3‑4B</a> / <a href="https://huggingface.co/Qwen/Qwen3-8B">Qwen3‑8B</a>, but only for single‑iteration and with incomplete multi‑iteration results (Appendix C). The practical recipe is therefore tied to the availability of a strong external teacher, and it is not demonstrated that the same stability can be achieved with weaker or less capable experience extractors.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> The evaluation metrics use only one rollout per query for Pass@1 on <a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a> and <a href="https://openreview.net/forum?id=BrowseComp_ZH">BrowseComp‑ZH</a>, and three rollouts for <a href="https://huggingface.co/datasets/gaia-benchmark/GAIA">GAIA‑Text‑103</a>. The small number of rollouts may lead to high variance, and no confidence intervals or significance tests are reported. This makes it difficult to assess whether the observed differences (e.g., 33.9% vs. 32.2%) are statistically meaningful.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> The off‑policy regime uses rejection sampling on teacher‑generated trajectories, but the paper does not report the rejection rate or analyze how trajectory selection interacts with the learned student distribution. This omission could hide a bias toward easier or more homogeneous demonstrations, and it limits reproducibility and insights into the robustness of the internalization signal.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> The analysis of premature‑answer failure in global injection is based on a single statistic (63.82% of cases) from the teacher’s output, but the underlying cause may be heavily influenced by the specific prompt formatting or the selector’s design. Without a more granular ablation (e.g., varying the order of experience, relevance threshold), the conclusion that global injection inherently causes misalignment is only partially supported.</p>
+</li>
+</ul>
+    </div>
+  </section>
+
+  <section id="related-papers" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/></svg>
+      Related Papers
+    </h2>
+    
+    
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><circle cx="12" cy="12" r="10"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+      <p>No related papers found.</p>
+    </div>
+    
+  </section>
+
+  
+  <section id="cost-report" class="content-card">
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      Generation Cost
+    </h2>
+    <div style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; margin-top: -0.5rem;">Generation Cost Breakdown</div>
+    
+    <div class="cost-dashboard">
+      <div class="cost-summary-card">
+        <div class="cost-summary-label">Total Cost</div>
+        <div class="cost-summary-value">$0.027625</div>
+        
+        <div class="cost-summary-sub">2 models</div>
+        <div class="cost-summary-badge">Multi-model</div>
+        
+      </div>
+      
+      <div class="cost-details-panel">
+        
+        <div class="cost-breakdown-grid">
+          
+          <div class="cost-detail-row">
+            <span class="detail-label">
+              <strong style="font-family: monospace; color: var(--text-main);">deepseek-v4-pro</strong>
+              <span class="detail-price" style="margin-left: 0.5rem;">DeepSeek</span>
+            </span>
+            <span class="detail-value">
+              <strong>50321</strong> tok
+              <span class="detail-price">$0.027625</span>
+            </span>
+          </div>
+          
+          <div class="cost-detail-row">
+            <span class="detail-label">
+              <strong style="font-family: monospace; color: var(--text-main);">grok-4.3</strong>
+              <span class="detail-price" style="margin-left: 0.5rem;">Grok</span>
+            </span>
+            <span class="detail-value">
+              <strong>0</strong> tok
+              <span class="detail-price">$0.000000</span>
+            </span>
+          </div>
+          
+          <div class="cost-detail-row total-row">
+            <span class="detail-label">Total Tokens</span>
+            <span class="detail-value">
+              <strong>50321</strong>
+            </span>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+
+  <footer class="footer">
+    <div>
+      Generated by <strong>ppagent</strong> on 2026-06-24 18:42
+    </div>
+    <div>
+      Model: <code>deepseek-v4-pro</code>
+    </div>
+  </footer>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Theme setup and control
+    const toggleBtn = document.getElementById("themeToggleBtn");
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const initialTheme = savedTheme || systemTheme;
+    
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    }
+
+    // Active navigation highlight on scroll
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link");
+    
+    function highlightNav() {
+      let scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+      const offset = 180;
+      
+      sections.forEach(section => {
+        const top = section.offsetTop - offset;
+        const height = section.offsetHeight;
+        const id = section.getAttribute("id");
+        
+        if (scrollPos >= top && scrollPos < top + height) {
+          navLinks.forEach(link => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === "#" + id) {
+              link.classList.add("active");
+            }
+          });
+        }
+      });
+    }
+    
+    window.addEventListener("scroll", highlightNav);
+    highlightNav();
+
+    // Custom CSS Badges for Critique Items starting with severity indicator
+    const critiqueCard = document.getElementById("critique");
+    if (critiqueCard) {
+      const listItems = critiqueCard.getElementsByTagName("li");
+      for (let li of listItems) {
+        let html = li.innerHTML;
+        // Check if there is an bracket severity tag and style it
+        html = html.replace(/\[HIGH\]/gi, '<span class="badge badge-high">HIGH</span>');
+        html = html.replace(/\[MEDIUM\]/gi, '<span class="badge badge-medium">MEDIUM</span>');
+        html = html.replace(/\[LOW\]/gi, '<span class="badge badge-low">LOW</span>');
+        li.innerHTML = html;
+      }
+    }
+
+    // Add Copy Button to Code Blocks
+    document.querySelectorAll("pre").forEach(pre => {
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+      
+      const btn = document.createElement("button");
+      btn.className = "copy-code-btn";
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+      btn.setAttribute("aria-label", "Copy code");
+      
+      wrapper.appendChild(btn);
+      
+      btn.addEventListener("click", () => {
+        const code = pre.querySelector("code")?.innerText || pre.innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success)"><polyline points="20 6 9 17 4 12"/></svg>`;
+          setTimeout(() => {
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+          }, 2000);
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>
