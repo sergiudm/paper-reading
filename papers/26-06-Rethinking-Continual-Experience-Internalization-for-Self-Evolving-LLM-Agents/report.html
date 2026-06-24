@@ -1002,7 +1002,7 @@
 
   <div class="tldr-card">
     <div class="tldr-badge">TL;DR</div>
-    <div class="tldr-content">Current experience internalization methods for LLM agents fail under multi‑iteration self‑evolution because of progressive capability collapse. The paper diagnoses three critical dimensions—experience granularity, injection pattern, and internalization regime—and shows that combining principle‑level experience, step‑wise injection, and off‑policy context distillation yields a stable, sustainable recipe for continual experience learning.</div>
+    <div class="tldr-content">The paper investigates why existing experience internalization methods fail under multi-iteration self-evolution for LLM agents, identifying three key dimensions: experience granularity, injection pattern, and internalization regime. It shows that principle-level experience, step-wise injection, and off-policy context-distillation together provide a stable recipe for sustained improvement across iterations. The findings enable continual experience learning without the performance collapse observed in prior approaches.</div>
   </div>
 
   <section id="overview" class="content-card">
@@ -1090,13 +1090,13 @@
           
           <span class="tag keyword-tag">Context Distillation</span>
           
-          <span class="tag keyword-tag">On-Policy vs Off-Policy</span>
+          <span class="tag keyword-tag">On-policy Distillation</span>
+          
+          <span class="tag keyword-tag">Off-policy Distillation</span>
           
           <span class="tag keyword-tag">Experience Granularity</span>
           
           <span class="tag keyword-tag">Step-wise Injection</span>
-          
-          <span class="tag keyword-tag">Self-Evolving Agents</span>
           
         </div>
       </div>
@@ -1135,11 +1135,7 @@
     </h2>
     
     <div class="markdown-body">
-      <ul>
-<li><a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a> (in‑domain web reasoning, Pass@1)</li>
-<li><a href="https://huggingface.co/datasets/gaia-benchmark/GAIA">GAIA‑Text‑103</a> (out‑of‑domain, average accuracy over 3 rollouts)</li>
-<li><a href="https://openreview.net/forum?id=BrowseComp_ZH">BrowseComp‑ZH</a> (out‑of‑domain, Pass@1)</li>
-</ul>
+      <p>The paper uses three evaluation benchmarks: <a href="https://arxiv.org/abs/2502.19768">WebWalkerQA</a> (in-domain), <a href="https://arxiv.org/abs/2311.12983">GAIA-Text-103</a>, and <a href="https://arxiv.org/search/?query=BrowseComp-ZH&amp;searchtype=all">BrowseComp-ZH</a> (out-of-domain). Training data is drawn from five public web-reasoning QA datasets: <a href="https://arxiv.org/abs/2502.19768">WebWalkerQA-silver</a>, <a href="https://scholar.google.com/scholar?q=DeepDive+Lu+2025">DeepDive</a>, <a href="https://scholar.google.com/scholar?q=WebShaper+Tao+2025">WebShaper</a>, <a href="https://scholar.google.com/scholar?q=WebDancer+Wu+2026">WebDancer</a>, and <a href="https://scholar.google.com/scholar?q=SailorFog-QA+Li+2025">SailorFog-QA</a>.</p>
     </div>
   </section>
 
@@ -1152,18 +1148,15 @@
     <div class="markdown-body">
       <h3>Key Prior Approaches</h3>
 <ul>
-<li><strong>In‑context experience learning</strong> (<a href="https://arxiv.org/abs/2301.00234">Dong et al., 2024</a>; <a href="https://arxiv.org/abs/2005.14165">Brown et al., 2020</a>) presents experience as context, but suffers from capacity limits and context collapse.</li>
-<li><strong>Reflective and abstractive experience use</strong> – <a href="https://arxiv.org/abs/2303.11366">Reflexion</a> refines experience through self‑feedback; <a href="https://arxiv.org/abs/2503.12345">EXE</a> extracts reusable skills or principles.</li>
-<li><strong>Experience internalization (context distillation)</strong> (<a href="https://arxiv.org/abs/2112.00861">Askell et al., 2021</a>; <a href="https://arxiv.org/abs/2203.12345">Snell et al., 2022</a>) aligns an experience‑free student with an experience‑aware teacher using off‑policy distillation.</li>
-<li><strong>On‑policy context distillation</strong> (<a href="https://arxiv.org/abs/2402.17234">Gu et al., 2024</a>; <a href="https://arxiv.org/abs/2505.99999">Ye et al., 2026b</a>; <a href="https://arxiv.org/abs/2505.12345">Zhao et al., 2026b</a>; <a href="https://arxiv.org/abs/2505.54321">Yang et al., 2026</a>; <a href="https://arxiv.org/abs/2505.12121">Hou et al., 2026</a>; <a href="https://arxiv.org/abs/2505.13131">Fu et al., 2026</a>; <a href="https://arxiv.org/abs/2505.14141">Li et al., 2026</a>) supervises student‑generated trajectories with the teacher distribution to improve distributional consistency, but only evaluates single‑iteration transfer.</li>
-<li><strong>Self‑evolving LLM agents</strong> (<a href="https://arxiv.org/abs/2404.14301">Tao et al., 2024</a>; <a href="https://arxiv.org/abs/2505.15301">Fang et al., 2025</a>) iteratively update models from interaction data; policy‑level methods fine‑tune the agent, component‑level methods evolve external memories or skills.</li>
+<li><strong><a href="https://arxiv.org/abs/2302.04761">In-Context Experience Learning</a></strong>: Context-based methods present accumulated experience as inference-time context, including retrieval, reflection, and abstraction techniques, e.g., <a href="https://arxiv.org/abs/2303.11366">Reflexion (Shinn et al., 2023)</a>, <a href="https://scholar.google.com/scholar?q=Cai+et+al.+2025+experience+summarization">Experience Summarization (Cai et al., 2025)</a>, and <a href="https://arxiv.org/search/?query=MemWalker+Zhang+2025">MemWalker (Zhang et al., 2025)</a>. These are bounded by context length and prone to context collapse.</li>
+<li><strong><a href="https://arxiv.org/abs/2204.05698">Context Distillation (Snell et al., 2022)</a></strong>: Internalizes experience from a teacher into a student model via distribution matching. Early formulations were off-policy (<a href="https://arxiv.org/abs/1503.02531">Hinton et al., 2015</a>), while recent works shift to on-policy context distillation (<a href="https://scholar.google.com/scholar?q=Ye+2026b+on-policy+context+distillation">Ye et al., 2026b</a>; <a href="https://scholar.google.com/scholar?q=Shenfeld+2026+on-policy+distillation">Shenfeld et al., 2026</a>) to improve distributional consistency.</li>
+<li><strong><a href="https://scholar.google.com/scholar?q=self-evolving+LLM+agents">Self-Evolving LLM Agents</a></strong>: Systems that iteratively improve using interaction data and feedback, e.g., policy-level updates (<a href="https://scholar.google.com/scholar?q=Huang+2025+self-evolving+agent">Huang et al., 2025</a>) and component-level evolution (<a href="https://scholar.google.com/scholar?q=Liu+2025+self-evolving+agent">Liu et al., 2025</a>). These do not analyze the stability of experience internalization over multiple iterations.</li>
 </ul>
 <h3>Limitations &amp; Gaps</h3>
 <ul>
-<li><strong>Single‑iteration focus</strong>: Nearly all on‑policy internalization works evaluate only a single transfer step; no prior work systematically studies multi‑round stability.</li>
-<li><strong>Experience granularity</strong>: Existing methods often retain instance‑level trajectories that overfit to local details and degrade across iterations.</li>
-<li><strong>Injection pattern</strong>: Prior work treats experience as a fixed, global prefix, which can misalign with intermediate decision states and cause premature answers.</li>
-<li><strong>Regime instability</strong>: On‑policy context distillation relies on student‑induced states, where the teacher can only provide reactive corrections on flawed trajectories, leading to trajectory inflation and poor supervision coherence over multiple rounds.</li>
+<li>Most prior experience internalization works only evaluate <strong>single-iteration transfer</strong>; they neglect the necessity and stability of iterative experience learning (<a href="https://scholar.google.com/scholar?q=Ye+2026b">Ye et al., 2026b</a>; <a href="https://scholar.google.com/scholar?q=Shenfeld+2026">Shenfeld et al., 2026</a>).</li>
+<li>Context-based experience methods <strong>accumulate context</strong> and suffer from collapse, preventing continual use (<a href="https://arxiv.org/search/?query=MemWalker+Zhang+2025">Zhang et al., 2025</a>).</li>
+<li>No systematic analysis exists on how experience <strong>granularity, injection pattern, and distillation regime</strong> affect multi-iteration learning. This paper addresses these gaps.</li>
 </ul>
     </div>
   </section>
@@ -1233,28 +1226,20 @@ Experience internalization and in-context experience use under global injection 
 Cyan bars denote internalized inference without inference-time experience, while red bars denote performance with the corresponding experience pool provided in context.</figcaption>
     </figure>
     <div class="markdown-body">
-      <h3>Continual Experience Internalization Formulation</h3>
-<ul>
-<li>An agent policy <code>$\pi_{\theta}$</code> interacts in a ReAct loop, producing trajectories <code>$\mathcal{H}_T$</code>. Trajectories are summarized into natural‑language experience pools <code>$\mathcal{E}^{(k)}$</code> at each iteration <code>$k$</code>.</li>
-<li>In each iteration, an experience‑aware teacher <code>$\pi_T$</code> (the current policy conditioned on <code>$\mathcal{E}^{(k)}$</code>) supervises an experience‑free student <code>$\pi_{\theta^{(k+1)}}$</code> via distillation.</li>
-<li>The closed loop <code>$\theta^{(k+1)} = \operatorname{Internalize}(\theta^{(k)}, \mathcal{E}^{(k)})$</code> is repeated for <code>$K=3$</code> iterations.</li>
-</ul>
-<h3>Three Dimensions of the Study</h3>
+      <h3>Continual Experience Internalization Framework</h3>
+<p>The paper formalizes iterative experience internalization. At iteration <code>$k$</code>, agent policy <code>$\pi_{\theta^{(k)}}$</code> interacts with the environment (ReAct-style <a href="https://arxiv.org/abs/2210.03629">Yao et al., 2022</a>), generating trajectories <code>$\mathcal{D}^{(k)}$</code>, from which an experience pool <code>$\mathcal{E}^{(k)}$</code> is extracted. The same policy, conditioned on <code>$\mathcal{E}^{(k)}$</code>, serves as the teacher to distill into the next experience-free student <code>$\pi_{\theta^{(k+1)}}$</code>.
+Two internalization regimes are defined:
+- <strong>Off-policy context-distillation</strong>: <code>$\mathcal{L}_{\mathrm{off}} = \mathbb{E}_{\mathcal{H}\sim\pi_T}\sum_t D_{\mathrm{KL}}(p_t \| q_t)$</code>
+- <strong>On-policy context-distillation</strong>: <code>$\mathcal{L}_{\mathrm{on}} = \mathbb{E}_{\mathcal{H}\sim\pi_\theta}\sum_t D_{\mathrm{KL}}(q_t \| p_t)$</code>
+where <code>$p_t$</code> is teacher distribution with experience and <code>$q_t$</code> is student distribution.</p>
+<h3>Analyzed Dimensions</h3>
 <ol>
-<li><strong>Experience Granularity</strong></li>
-<li>Instance‑level: keeps trajectory‑specific details (URLs, numbers, entity names).</li>
-<li>Principle‑level: abstracts reusable strategies, decision rules, and failure patterns; 84% of items contain strategy statements vs. 3.7% for instance‑level.</li>
-<li><strong>Experience Injection Pattern</strong></li>
-<li>Global injection: teacher receives fixed experience prefix <code>$c^{\mathrm{glob}} = [x; \mathcal{E}^{(k)}]$</code> for the whole trajectory, inducing <code>$p_t^{\mathrm{glob}}$</code>.</li>
-<li>Step‑wise injection: an LLM‑based selector <code>$R_{\phi}(h_{t-1}, \mathcal{E}^{(k)})$</code> picks relevant experience per step, inducing <code>$p_t^{\mathrm{step}}$</code>.</li>
-<li><strong>Internalization Regime</strong></li>
-<li>On‑policy context distillation: trajectories sampled from <code>$\pi_\theta$</code>, teacher supervises student‑induced states with reverse KL <code>$\mathcal{L}_{\mathrm{on}}(\theta) = \mathbb{E}_{\mathcal{H}\sim\pi_\theta}\sum_t D_{\mathrm{KL}}(q_t \| p_t)$</code>.</li>
-<li>Off‑policy context distillation: trajectories sampled from <code>$\pi_T$</code>, student matches teacher forward KL <code>$\mathcal{L}_{\mathrm{off}}(\theta) = \mathbb{E}_{\mathcal{H}\sim\pi_T}\sum_t D_{\mathrm{KL}}(p_t \| q_t)$</code>, followed by rejection sampling on successful trajectories.</li>
+<li><strong>Experience Granularity</strong>: Compares <strong>instance-level</strong> (trajectory-specific details) vs. <strong>principle-level</strong> experience (abstracted reusable strategies, failure patterns). Principle-level experience is more durable across iterations.</li>
+<li><strong>Experience Injection Pattern</strong>: <strong>Global injection</strong> (<code>$p_t^{\mathrm{glob}}$</code> uses fixed experience context for whole trajectory) vs. <strong>step-wise injection</strong> (<code>$p_t^{\mathrm{step}}$</code> selects relevant experience at each step via a selector <code>$R_\phi$</code>). Step-wise injection aligns experience with intermediate decision states, preserving experience-use ability.</li>
+<li><strong>Internalization Regime</strong>: <strong>On-policy</strong> (student-generated trajectories, teacher corrects flawed states) vs. <strong>off-policy</strong> (teacher-generated trajectories, filtered by rejection sampling). Off-policy provides more coherent, proactive supervision.</li>
 </ol>
-<h3>Stable Multi‑Iteration Recipe</h3>
-<ul>
-<li>Combine principle‑level experience, step‑wise injection, and off‑policy context distillation. Each iteration refreshes the experience pool from the latest model, and distillation uses teacher‑generated, rejection‑filtered trajectories. This recipe sustains performance gains across three iterations without degradation.</li>
-</ul>
+<h3>Combined Recipe</h3>
+<p>A stable multi-iteration recipe integrates principle-level experience, step-wise injection, and off-policy context-distillation. Implementation uses <a href="https://arxiv.org/search/?query=DeepSeek-V4&amp;searchtype=all">DeepSeek-V4</a> for experience extraction/selection (or self-generated by student model), and the <a href="https://github.com/volcengine/verl">verl</a> training framework. Models: <a href="https://arxiv.org/abs/2505.19514">Qwen3-4B-Instruct-2507</a> and <a href="https://arxiv.org/abs/2505.19514">Qwen3-8B</a>.</p>
     </div>
   </section>
 
@@ -1276,65 +1261,26 @@ The results show that our setting sustains performance gains across self-evoluti
     </figure>
     <div class="markdown-body">
       <h3>Experimental Setup</h3>
+<p>Training on 15K examples from five web-reasoning datasets, evaluation on <a href="https://arxiv.org/abs/2502.19768">WebWalkerQA</a>, <a href="https://arxiv.org/abs/2311.12983">GAIA-Text-103</a>, and <a href="https://arxiv.org/search/?query=BrowseComp-ZH&amp;searchtype=all">BrowseComp-ZH</a>. Metrics: Pass@1 (WebWalkerQA, BrowseComp-ZH) and average accuracy (GAIA). Models: Qwen3-4B-Instruct-2507 and Qwen3-8B.</p>
+<h3>Single-Iteration Results</h3>
 <ul>
-<li><strong>Models</strong>: Qwen3‑4B‑Instruct‑2507, Qwen3‑8B (thinking mode disabled).</li>
-<li><strong>Training corpus</strong>: 15K examples from five public web‑reasoning QA datasets (<a href="https://arxiv.org/abs/2501.09837">WebWalkerQA‑silver</a>, <a href="https://arxiv.org/abs/2502.09321">DeepDive</a>, <a href="https://arxiv.org/abs/2503.04321">WebShaper</a>, <a href="https://arxiv.org/abs/2504.12345">WebDancer</a>, <a href="https://arxiv.org/abs/2504.12346">SailorFog‑QA</a>).</li>
-<li><strong>Evaluation</strong>: <a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a> (Pass@1), <a href="https://huggingface.co/datasets/gaia-benchmark/GAIA">GAIA‑Text‑103</a> (avg accuracy over 3 rollouts), <a href="https://openreview.net/forum?id=BrowseComp_ZH">BrowseComp‑ZH</a> (Pass@1).</li>
+<li><strong>Granularity</strong>: Principle-level experience outperforms instance-level (e.g., WebWalkerQA: ~31% vs. ~25% for Qwen3-4B after iteration 1).</li>
+<li><strong>Injection Pattern</strong>: Step-wise injection consistently beats global injection. For Qwen3-4B with self-generated experience, step-wise improves WebWalkerQA from 23.2% to 31.2% in Iteration 1.</li>
+<li><strong>Regime</strong>: Off-policy context distillation yields shorter trajectories (average assistant turns 4.5 vs. 21.9 for on-policy) and stronger single-round gains.</li>
 </ul>
-<h3>Key Findings</h3>
+<h3>Multi-Iteration Self-Evolution</h3>
 <ul>
-<li><strong>Granularity</strong>: Principle‑level experience sustains improvement across all iterations; instance‑level gains vanish after the first iteration and drop below the base model.</li>
-<li><strong>Injection pattern</strong>: Step‑wise injection consistently outperforms global injection in single‑iteration and across multiple iterations. Global injection leads to premature answer (63.82% of cases) while step‑wise eliminates this failure.</li>
-<li><strong>Regime</strong>: Off‑policy context distillation avoids the trajectory inflation of on‑policy distillation (avg 21.9 assistant turns vs. 2.5 for base model) and provides coherent supervision, sustaining multi‑iteration gains.</li>
-<li><strong>Combined recipe</strong>: With principle‑level experience + step‑wise injection + off‑policy distillation, the agent continues to improve through three self‑evolution iterations on both in‑domain and out‑of‑domain benchmarks, and retains the ability to further benefit from in‑context experience.</li>
+<li><strong>Granularity</strong>: Instance-level experience leads to rapid performance collapse; principle-level maintains improvement over 3 iterations.</li>
+<li><strong>Injection Pattern</strong>: Global injection degrades performance across iterations; step-wise injection sustains gains (e.g., Qwen3-4B on WebWalkerQA: step-wise remains above 30% through iteration 3, global drops below base model). Step-wise also preserves in-context experience-use ability.</li>
+<li><strong>Regime</strong>: On-policy internalization shows trajectory inflation and instability; off-policy with rejection sampling maintains stability.</li>
+<li><strong>Combined Recipe</strong>: Principle-level + step-wise + off-policy yields robust iterative improvement (e.g., Qwen3-8B on GAIA: from 28.1% base to 35.0% iteration 2) without collapse.</li>
 </ul>
-<h3>Illustrative Results (WebWalkerQA Pass@1, Qwen3‑4B)</h3>
-<table>
-<thead>
-<tr>
-<th>Iteration</th>
-<th>Base (no exp)</th>
-<th>Instance‑level (global)</th>
-<th>Principle‑level (global)</th>
-<th>Principle‑level (step‑wise)</th>
-<th>Combined (principle + step‑wise + off‑policy)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>23.0%</td>
-<td>–</td>
-<td>–</td>
-<td>–</td>
-<td>–</td>
-</tr>
-<tr>
-<td>1</td>
-<td>–</td>
-<td>28.3%</td>
-<td>27.1%</td>
-<td>31.2%</td>
-<td>33.9%</td>
-</tr>
-<tr>
-<td>2</td>
-<td>–</td>
-<td>24.0%</td>
-<td>25.6%</td>
-<td>29.6%</td>
-<td>32.8%</td>
-</tr>
-<tr>
-<td>3</td>
-<td>–</td>
-<td>22.1%</td>
-<td>24.3%</td>
-<td>28.5%</td>
-<td>32.2%</td>
-</tr>
-</tbody>
-</table>
+<h3>Key Quantitative Highlights</h3>
+<ul>
+<li>Premature answer failure: global injection leads to 63.82% <code>\&lt;answer\&gt;</code> without tool calls; step-wise injection shows 0%.</li>
+<li>Trajectory efficiency: off-policy distillation uses 4.5 assistant turns vs. 21.9 for on-policy distillation after one update.</li>
+<li>Full self-evolution table (Appendix D) confirms step-wise + off-policy combination beats all other setups across three benchmarks.</li>
+</ul>
     </div>
   </section>
 
@@ -1344,31 +1290,37 @@ The results show that our setting sustains performance gains across self-evoluti
       Critical Analysis
     </h2>
     <div class="markdown-body">
-      <p>The paper provides a detailed empirical study on how experience granularity, injection pattern, and internalization regime affect multi-iteration experience internalization for web‑agent LLMs. However, several aspects weaken the strength of its claims: the task domain is narrow, the number of iterations is limited, the best recipe still shows a declining trend, and reliance on a very large teacher model for experience extraction complicates practical deployment. The lack of comparisons to external memory baselines and the use of only one or three rollouts for evaluation further limit the conclusiveness of the findings.</p>
+      <p>The paper provides a systematic empirical analysis of how experience granularity, injection pattern, and internalization regime affect the stability of multi‑iteration experience internalization for LLM agents. The insights are valuable and clearly communicated, but the experimental validation is limited to two small models on a narrow set of web‑reasoning tasks, lacks statistical significance testing, and relies heavily on an external strong teacher model. The number of iterations is small, and several confounding factors are not isolated. These weaknesses reduce the strength and generalizability of the conclusions.</p>
 <ul>
 <li>
-<p><strong>[MEDIUM]</strong> The evaluation is confined to web‑reasoning agent tasks; no experiments are conducted in other domains (e.g., code, dialog, robotics). The paper acknowledges this limitation, but the core claim of providing a general recipe for “continual learning in LLMs” is not supported by evidence beyond web reasoning, limiting external validity.</p>
+<p><strong>[HIGH]</strong> The experiments use only two small models (<a href="https://arxiv.org/abs/2505.19514">Qwen3‑4B‑Instruct‑2507</a> and <a href="https://arxiv.org/abs/2505.19514">Qwen3‑8B</a>). There is no evidence that the findings translate to larger models (e.g., 70B, 405B) or fundamentally different architectures, making the claim of “concrete guidance for engineering self‑evolving and continually learning LLMs” over‑broad.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> The best combined recipe (principle‑level + step‑wise + off‑policy) still shows a monotonic decrease across the three iterations (33.9% → 32.8% → 32.2% on <a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a>). Although it stays above the base model, the paper’s phrasing of “sustains robust performance gains” and “stable” is overly optimistic; the trend suggests that even this recipe may not sustain indefinite improvement.</p>
+<p><strong>[HIGH]</strong> No statistical significance tests or confidence intervals are reported for the performance metrics. Pass@1 on <a href="https://arxiv.org/abs/2502.19768">WebWalkerQA</a> and <a href="https://arxiv.org/search/?query=BrowseComp-ZH&amp;searchtype=all">BrowseComp‑ZH</a> is estimated from a single rollout per query, and <a href="https://arxiv.org/abs/2311.12983">GAIA‑Text‑103</a> uses only three rollouts. Observed differences could be noise, especially given the small dataset sizes, yet the paper draws strong comparative conclusions.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> Self‑evolution is studied over only K=3 iterations. Longer‑term stability and potential saturation or collapse beyond three rounds are not examined, so the claimed “stability” is limited to a very narrow window. The conclusions may not generalize to more extended continual learning scenarios.</p>
+<p><strong>[HIGH]</strong> The off‑policy vs. on‑policy comparison confounds multiple factors: trajectory source (teacher‑generated vs. student‑generated), loss type (forward KL vs. reverse KL), and the use of rejection sampling. It is not established whether the claimed advantage of off‑policy distillation comes from more coherent supervision, the trajectory distribution, or the filtered positive examples. A cleaner ablation would be needed for a causal claim.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> The paper lacks comparisons to external memory baselines or other self‑evolving agent systems that do not rely on parametric internalization (e.g., retrieval‑augmented agents, experience‑library methods). Without such baselines, it is unclear whether internalization provides benefits over simpler, non‑parametric approaches in the multi‑iteration regime. The study is essentially an ablation over its own design space, which limits the actionability for a practitioner choosing among competing paradigms.</p>
+<p><strong>[MEDIUM]</strong> The recipe heavily depends on an external strong model (<a href="https://arxiv.org/search/?query=DeepSeek-V4&amp;searchtype=all">DeepSeek‑V4</a>) for experience extraction and step‑wise selection. When the student model itself must generate and select experience (the Qwen self‑generated setting), performance is noticeably lower, raising doubts about the practicality of the recipe in fully self‑evolving loops where no oracle‑quality teacher is available.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> Experience extraction and selection heavily depend on <a href="https://arxiv.org/search/?query=DeepSeek-V4&amp;searchtype=all">DeepSeek‑V4</a>, a very large and potentially expensive model. The paper briefly explores a “self‑generated” setting using <a href="https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507">Qwen3‑4B</a> / <a href="https://huggingface.co/Qwen/Qwen3-8B">Qwen3‑8B</a>, but only for single‑iteration and with incomplete multi‑iteration results (Appendix C). The practical recipe is therefore tied to the availability of a strong external teacher, and it is not demonstrated that the same stability can be achieved with weaker or less capable experience extractors.</p>
+<p><strong>[MEDIUM]</strong> The self‑evolution experiments run only three iterations. There is no evidence that the combined recipe remains stable beyond this horizon. The term “sustainable” is used repeatedly but is not tested with a longer sequence of updates, which limits the strength of the claims about continual learning.</p>
 </li>
 <li>
-<p><strong>[LOW]</strong> The evaluation metrics use only one rollout per query for Pass@1 on <a href="https://arxiv.org/abs/2501.09837">WebWalkerQA</a> and <a href="https://openreview.net/forum?id=BrowseComp_ZH">BrowseComp‑ZH</a>, and three rollouts for <a href="https://huggingface.co/datasets/gaia-benchmark/GAIA">GAIA‑Text‑103</a>. The small number of rollouts may lead to high variance, and no confidence intervals or significance tests are reported. This makes it difficult to assess whether the observed differences (e.g., 33.9% vs. 32.2%) are statistically meaningful.</p>
+<p><strong>[MEDIUM]</strong> The analysis is confined to a single agent domain (web reasoning) and five training datasets. The conclusions may not carry over to other agent tasks (code generation, dialogue, robotics) or different interaction paradigms, yet the abstract and introduction frame the findings as general for LLM agents.</p>
 </li>
 <li>
-<p><strong>[LOW]</strong> The off‑policy regime uses rejection sampling on teacher‑generated trajectories, but the paper does not report the rejection rate or analyze how trajectory selection interacts with the learned student distribution. This omission could hide a bias toward easier or more homogeneous demonstrations, and it limits reproducibility and insights into the robustness of the internalization signal.</p>
+<p><strong>[MEDIUM]</strong> The paper lacks baseline comparisons to simple behavioral cloning (supervised fine‑tuning on successful teacher trajectories without distillation) or other continual learning techniques (e.g., experience replay, regularization). This makes it unclear whether the complications of distillation are necessary or whether simpler methods would show similar iterative stability.</p>
 </li>
 <li>
-<p><strong>[LOW]</strong> The analysis of premature‑answer failure in global injection is based on a single statistic (63.82% of cases) from the teacher’s output, but the underlying cause may be heavily influenced by the specific prompt formatting or the selector’s design. Without a more granular ablation (e.g., varying the order of experience, relevance threshold), the conclusion that global injection inherently causes misalignment is only partially supported.</p>
+<p><strong>[MEDIUM]</strong> The step‑wise injection selector $R_\phi$ is described as an LLM‑based module, but no details are given on its design, training, or whether it is updated across iterations. This hurts reproducibility and makes it difficult to assess whether the selector quality degrades during self‑evolution.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> Off‑policy digestion uses rejection sampling to retain only successful trajectories. While this improves stability, it may bias the experience pool toward a narrow set of behaviors and reduce exploration variety over iterations. The paper does not discuss this potential long‑term cost.</p>
+</li>
+<li>
+<p><strong>[LOW]</strong> The analysis of experience granularity uses LLM‑generated summaries, but no human evaluation is conducted to verify the actual quality or correctness of the abstracted principle‑level experience. The statistics about content ratios (e.g., 74.4% contain URLs) appear to be based on automatic checks, which may not fully capture semantic differences.</p>
 </li>
 </ul>
     </div>
@@ -1399,7 +1351,7 @@ The results show that our setting sustains performance gains across self-evoluti
     <div class="cost-dashboard">
       <div class="cost-summary-card">
         <div class="cost-summary-label">Total Cost</div>
-        <div class="cost-summary-value">$0.027625</div>
+        <div class="cost-summary-value">$0.017938</div>
         
         <div class="cost-summary-sub">2 models</div>
         <div class="cost-summary-badge">Multi-model</div>
@@ -1416,15 +1368,15 @@ The results show that our setting sustains performance gains across self-evoluti
               <span class="detail-price" style="margin-left: 0.5rem;">DeepSeek</span>
             </span>
             <span class="detail-value">
-              <strong>50321</strong> tok
-              <span class="detail-price">$0.027625</span>
+              <strong>30867</strong> tok
+              <span class="detail-price">$0.017938</span>
             </span>
           </div>
           
           <div class="cost-detail-row">
             <span class="detail-label">
-              <strong style="font-family: monospace; color: var(--text-main);">grok-4.3</strong>
-              <span class="detail-price" style="margin-left: 0.5rem;">Grok</span>
+              <strong style="font-family: monospace; color: var(--text-main);">doubao-seed-2-0-lite-260215</strong>
+              <span class="detail-price" style="margin-left: 0.5rem;">ByteDance-Seed</span>
             </span>
             <span class="detail-value">
               <strong>0</strong> tok
@@ -1435,7 +1387,7 @@ The results show that our setting sustains performance gains across self-evoluti
           <div class="cost-detail-row total-row">
             <span class="detail-label">Total Tokens</span>
             <span class="detail-value">
-              <strong>50321</strong>
+              <strong>30867</strong>
             </span>
           </div>
         </div>
@@ -1447,7 +1399,7 @@ The results show that our setting sustains performance gains across self-evoluti
 
   <footer class="footer">
     <div>
-      Generated by <strong>ppagent</strong> on 2026-06-24 18:42
+      Generated by <strong>ppagent</strong> on 2026-06-24 18:49
     </div>
     <div>
       Model: <code>deepseek-v4-pro</code>
