@@ -1,6 +1,6 @@
 # Harness Updating Is Not Harness Benefit: Disentangling Evolution Capabilities in Self-Evolving LLM Agents
 
-> **TL;DR**: This paper disentangles two capabilities critical to harness self-evolution in LLM agents: *harness-updating* (producing useful harness updates from execution evidence) and *harness-benefit* (benefiting from those updates during task solving). Controlling for base task-solving capability, the study finds harness-updating is nearly flat across model tiers—even a small model like Qwen3.5-9B can produce updates as effective as those from Claude Opus 4.6. In contrast, harness-benefit is non-monotonic: weak models gain little, not due to a ceiling effect, but because they fail to *activate* relevant harness artifacts and fail to *adhere* to them over long trajectories. The findings suggest investing capability in the task-solving agent rather than the evolver, and targeting harness invocation and long-horizon instruction following in agent training.
+> **TL;DR**: The paper disentangles two capabilities in self-evolving LLM agents: harness-updating (producing effective harness updates) and harness-benefit (gaining performance from updates). Experiments across 7 LLMs and 3 benchmarks show that harness-updating is flat with respect to model base capability, while harness-benefit is non-monotonic—weak models benefit least due to activation and adherence failures. The findings guide investment in agent training for harness invocation and long-horizon instruction following.
 
 | Field | Value |
 |-------|-------|
@@ -11,58 +11,55 @@
 | **Published** | 2026-05-28 |
 | **Authors** | Minhua Lin, Juncheng Wu, Zijun Wang, Zhan Shi, Yisi Sang, Bing He, Zewen Liu, Tianxin Wei, Zongyu Wu, Zhiwei Zhang, Dakuo Wang, Xiang Zhang, Benoit Dumoulin, Cihang Xie, Yuyin Zhou, Suhang Wang, Hanqing Lu |
 | **Affiliations** | The Pennsylvania State University, UC Santa Cruz, Amazon, Emory University, UIUC, Northeastern University |
-| **Keywords** | harness self-evolution, LLM agents, harness-updating, harness-benefit, base capability, evolution gain, skill-load rate, harness adherence, long-horizon instruction following |
+| **Keywords** | self-evolving LLM agents, harness-updating capability, harness-benefit capability, base capability, agent harness, evolver, instruction following, skill loading |
 | **Paper Type** | Method · Benchmark · Survey · **Analysis** ✅ · Empirical · Framework · Position · Application |
 
 
 ## Experimental Setup
 
 
-![Figure 3: Harness-updating capability (Δupdate\Delta_{\text{update}}) of each evolver. Evolvers are grouped by model family (Claude, Qwen, GPT-OSS). The best and worst evolver, marked in bold within each panel, change with the benchmark.](figures/figure_2.png)
+![Figure 3: Harness-updating capability ($\Delta_{\text{update}}$) of each evolver. Evolvers are grouped by model family (Claude, Qwen, GPT-OSS). The best and worst evolver, marked in bold within each panel, change with the benchmark.](figures/figure_2.png)
 
-*Figure 3: Harness-updating capability (Δupdate\Delta_{\text{update}}) of each evolver. Evolvers are grouped by model family (Claude, Qwen, GPT-OSS). The best and worst evolver, marked in bold within each panel, change with the benchmark.*
+*Figure 3: Harness-updating capability ($\Delta_{\text{update}}$) of each evolver. Evolvers are grouped by model family (Claude, Qwen, GPT-OSS). The best and worst evolver, marked in bold within each panel, change with the benchmark.*
 
 
-![Figure 9: Δbenefit\Delta_{\text{benefit}} versus base pass rate on MCP (left) and SB (right) datasets. Each point corresponds to one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate.](figures/figure_8.png)
+![Figure 9: $\Delta_{\text{benefit}}$ versus base pass rate on MCP (left) and SB (right) datasets. Each point corresponds to one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate.](figures/figure_8.png)
 
-*Figure 9: Δbenefit\Delta_{\text{benefit}} versus base pass rate on MCP (left) and SB (right) datasets. Each point corresponds to one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate.*
+*Figure 9: $\Delta_{\text{benefit}}$ versus base pass rate on MCP (left) and SB (right) datasets. Each point corresponds to one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate.*
 
-- **[SWE-bench Verified](https://arxiv.org/abs/2310.06770)** (software engineering): 500 real-world GitHub issue resolution tasks across 12 Python repositories.
-- **[MCP-Atlas](https://scholar.google.com/scholar?q=MCP-Atlas+benchmark)** (tool use): 500 tasks requiring orchestration of 3–6 tool calls across 36 MCP servers with 220 tools.
-- **[SkillsBench](https://arxiv.org/search/?query=SkillsBench+benchmark+Li+2026&searchtype=all)** (skill-based execution): 86 tasks across 11 domains (e.g., data analysis, document processing) with deterministic per-task verifiers.
+### Datasets
+- [SWE-bench Verified](https://arxiv.org/abs/2406.11719): Software engineering benchmark of 500 real-world GitHub issues. Used to evaluate agent's code repair capability.
+- [MCP-Atlas](https://scholar.google.com/scholar?q=MCP-Atlas+benchmark): Tool-use benchmark involving multi-server orchestration over 36 MCP servers. Evaluates tool-use competency.
+- [SkillsBench](https://scholar.google.com/scholar?q=SkillsBench+benchmark): Skill-based execution benchmark across 11 domains with 86 tasks. Evaluates agent's ability to use harness-provided skills.
 
 ## Previous Work & Limitations
 
 ### Key Prior Approaches
 
 #### Harness Engineering
-These works treat the agent's external harness (prompts, tools, memory, skills, code) as a first-class design object.
-- **[ReAct](https://arxiv.org/abs/2210.03629)** and **[Yang et al. (2024b)](https://arxiv.org/search/?query=Yang+agentic+systems+2024&searchtype=all)**: General frameworks for agent design where the harness mediates reasoning and action.
-- **[Prompt engineering](https://arxiv.org/abs/2202.12837)**: Prompts serve as natural-language behavioral rules (cited as Zhou et al. 2022).
-- **[Tool-augmented agents](https://arxiv.org/abs/2303.08317)**: Methods for tool discovery and invocation, e.g., [Hou et al. 2025](https://arxiv.org/search/?query=Hou+tool+use+LLM+agents+2025&searchtype=all), [Qin et al. 2024](https://arxiv.org/abs/2303.17580), [Liu et al. 2025](https://arxiv.org/search/?query=Liu+tool+learning+2025&searchtype=all), [Lin et al. 2026a](https://arxiv.org/search/?query=Lin+tool+benchmark+2026&searchtype=all).
-- **[Memory systems](https://arxiv.org/abs/2304.03442)**: Stores of prior observations and strategies; e.g., [Ouyang et al. 2025](https://arxiv.org/search/?query=Ouyang+agent+memory+2025&searchtype=all), [Xu et al. 2026](https://arxiv.org/search/?query=Xu+LLM+memory+2026&searchtype=all), [Fang et al. 2026](https://arxiv.org/search/?query=Fang+memory+2026&searchtype=all).
-- **[Skill libraries](https://arxiv.org/abs/2401.11000)**: Reusable procedures packaged into callable modules; e.g., [Li et al. 2026b](https://arxiv.org/search/?query=SkillsBench+Li+2026&searchtype=all), [Liu et al. 2026](https://arxiv.org/search/?query=Liu+skill+module+2026&searchtype=all).
-- **[Code-as-harness](https://arxiv.org/abs/2405.02947)**: The harness itself is executable source that can be optimized ([Lee et al. 2026](https://arxiv.org/search/?query=Lee+code+harness+2026&searchtype=all)).
+- [ReAct](https://arxiv.org/abs/2210.03629) and [Tree of Thoughts](https://arxiv.org/abs/2305.10601) pioneered LLM agents with external reasoning scaffolds.
+- Prompt methods: [Zhou et al. 2022](https://arxiv.org/abs/2201.11903), [Pan et al. 2026](https://scholar.google.com/scholar?q=Pan+et+al.+2026+prompts) provide natural-language guidance.
+- Tool use: [Hou et al. 2025](https://scholar.google.com/scholar?q=Hou+et+al.+2025+tools), [Qin et al. 2024](https://arxiv.org/abs/2307.16789) expose external APIs with discovery and invocation.
+- Memory: [Ouyang et al. 2025](https://scholar.google.com/scholar?q=Ouyang+et+al.+2025+memory), [Xu et al. 2026](https://scholar.google.com/scholar?q=Xu+et+al.+2026+memory) store and retrieve prior observations.
+- Skills: [Li et al. 2026b](https://scholar.google.com/scholar?q=Li+et+al.+2026+skills), [Liu et al. 2026](https://scholar.google.com/scholar?q=Liu+et+al.+2026+skills) package reusable procedures as callable modules.
+- Code harness: [Ning et al. 2026](https://scholar.google.com/scholar?q=Ning+et+al.+2026+code+harness), [Lee et al. 2026](https://scholar.google.com/scholar?q=Lee+et+al.+2026+code+harness) treat harness as executable code.
 
-#### Self‑Evolution of LLM Agents
-These methods update the harness automatically using execution evidence.
-- **[Reflexion](https://arxiv.org/abs/2303.11366)**: Stores verbal self-reflections from failed attempts for later retrieval.
-- **[Self-Refine](https://arxiv.org/abs/2303.17651)**: Iteratively improves outputs through self-feedback without persistent harness state.
-- **[ExpeL](https://arxiv.org/abs/2308.10144)**: Extracts reusable insights from training trajectories for retrieval.
-- **Prompt-level evolution**: [PromptWizard](https://arxiv.org/abs/2405.04469) refines prompts via feedback-driven critique; [ACE](https://arxiv.org/abs/2405.14891) evolves contextual playbooks; [GEPA](https://arxiv.org/abs/2402.02684) evolves prompts through trajectory-level reflection.
-- **Memory-level evolution**: [EvolveR](https://arxiv.org/abs/2405.14734) distills offline strategies for online retrieval; [MemEvolve](https://arxiv.org/abs/2402.11310) studies meta-evolution of memory; [MemMA](https://arxiv.org/search/?query=Lin+MemMA+2026&searchtype=all) repairs long-horizon memory.
-- **Skill/workflow evolution**: [Voyager](https://arxiv.org/abs/2305.16291) accumulates executable skills in Minecraft; [AWM](https://arxiv.org/abs/2403.01052) induces workflows from trajectories; [SkillRL](https://arxiv.org/abs/2404.08472) expands skill libraries via RL; [EvoSkill](https://arxiv.org/search/?query=EvoSkill+2026&searchtype=all) discovers skills from experience.
-- **Tool evolution**: [Chen et al. 2025](https://arxiv.org/search/?query=Chen+tool+evolution+2025&searchtype=all) and [Li et al. 2026a](https://arxiv.org/search/?query=Li+tool+self-evolution+2026&searchtype=all) allow agents to synthesize and revise tools over time.
+#### Self-Evolution of LLM Agents
+- Early reflection-based methods: [Reflexion](https://arxiv.org/abs/2303.11366) stores verbal self-reflections; [Self-Refine](https://arxiv.org/abs/2303.17651) iteratively improves outputs via self-feedback; [ExpeL](https://arxiv.org/abs/2308.10144) extracts reusable insights from trajectories.
+- Prompt-level evolution: [PromptWizard](https://arxiv.org/abs/2405.15269) refines prompts through critique; [ACE](https://arxiv.org/abs/2410.05869) evolves contextual playbooks; [GEPA](https://scholar.google.com/scholar?q=GEPA+self-evolving+agents) evolves prompts from trajectory-level reflection.
+- Memory-level evolution: [EvolveR](https://scholar.google.com/scholar?q=EvolveR+self-evolving+agents) connects offline strategy distillation with online retrieval; [MemEvolve](https://scholar.google.com/scholar?q=MemEvolve+self-evolving+agents) studies meta-evolution of memory systems; [MemMA](https://scholar.google.com/scholar?q=MemMA+self-evolving+agents) improves long-horizon memory through construction and repair.
+- Skill-level evolution: [Voyager](https://arxiv.org/abs/2305.16291) accumulates executable skills; [AWM](https://arxiv.org/abs/2406.09357) induces workflows from successful trajectories; [SkillRL](https://scholar.google.com/scholar?q=SkillRL+self-evolving+agents) recursively expands skill libraries; [EvoSkill](https://scholar.google.com/scholar?q=EvoSkill+self-evolving+agents) automates skill discovery.
+- Tool-level evolution: agents synthesize or revise tools [Chen et al. 2025](https://scholar.google.com/scholar?q=Chen+et+al.+2025+tool+evolution), [Li et al. 2026a](https://scholar.google.com/scholar?q=Li+et+al.+2026a+tool+evolution).
 
 ### Limitations & Gaps
-- End-to-end evaluations conflate three sources of improvement: the agent’s base capability, the evolver’s harness‑updating quality, and the agent’s harness‑benefit. None of the cited works isolates these capabilities individually.
-- No prior study systematically varies task-solving agents and evolvers independently to measure how each capability depends on the underlying LLM.
-- The scaling properties of harness-updating (e.g., whether small/fast models can act as evolvers) and the weakness of weak-tier agents in benefiting from harnesses remain unexplored.
+- Prior self-evolution methods report end-to-end improvement but do not disentangle the contributions of the evolver (harness-updating) and the agent (harness-benefit). The gain may stem from either higher-quality updates or better agent utilization, but these are not separately measured.
+- No systematic study on how a model's base capability relates to its ability to produce useful harness updates or to benefit from them. Most works evaluate a single agent–evolver pair, so the relationship to base capability remains unknown.
+- The potential inefficiency of scaling the evolver model vs. the agent model is unexplored—if harness-updating is not strongly tied to base capability, resources could be better allocated to the agent.
 
 
 ### Related Work Landscape
 
-The related work landscape centers on self-evolving LLM agents, harness-based evaluation frameworks, and benchmarks for measuring agent self-improvement. Queries highlight the need to separate superficial harness updates from genuine capability evolution, with prior studies focusing on agent self-improvement datasets and evolution mechanisms that the main paper disentangles.
+Research on self-evolving LLM agents centers on prompt evolution, skill libraries, memory mechanisms, and iterative self-improvement, with foundational systems often conflating harness updates (e.g., prompt or tool changes) with genuine capability gains. Key prior works demonstrate non-monotonic performance and automatic curriculum learning but lack explicit disentanglement of evolution capabilities, which recent benchmarks and analyses begin to address through targeted evaluation of self-reflection and skill acquisition.
 
 
 ## Core Analysis & Insights
@@ -72,37 +69,29 @@ The related work landscape centers on self-evolving LLM agents, harness-based ev
 
 *Figure 1: Overview of harness self-evolution.*
 
-### Harness‑Evolution Formalization
+### Formalization of Harness Self-Evolution
+The agent is composed of a frozen model $f$ and an external harness state $H_t$ at evolution step $t$: $A_t = (f, H_t)$. The harness includes prompts, skills, memories, tools.
 
-An LLM agent is a frozen model $f$ plus an editable harness $H_t$:
-$$\mathcal{A}_t = (f, H_t).$$
-
-An **evolver** $e$ reads the previous harness $H_{t-1}$ and execution evidence ${\mathcal{D}_t}$ (trajectories and outputs from the current task batch ${\mathcal{X}_t}$) and produces an update:
-$$
-\Delta H_t = e(H_{t-1}, \mathcal{D}_t), \qquad
-H_t = \mathrm{Apply}(H_{t-1}, \Delta H_t).
-$$
+An evolver $e$ processes execution evidence $\mathcal{D}_t$ and the previous harness $H_{t-1}$ to propose an update $\Delta H_t = e(H_{t-1}, \mathcal{D}_t)$, which is applied to obtain $H_t = \mathrm{Apply}(H_{t-1}, \Delta H_t)$. The evolver is typically an LLM agent.
 
 ### Evolution Protocol
-1. Start with initial harness $H_0$.
-2. For $t=1$ to $T$:
-   - Agent $(f, H_{t-1})$ attempts tasks $\mathcal{X}_t$, generating trajectories $\tau_{t,x}$ and outputs $y_{t,x}$.
-   - Collect evidence $\mathcal{D}_t = \{(x, \tau_{t,x}, y_{t,x}) : x \in \mathcal{X}_t\}$.
-   - Evolver produces $H_t$ from $(H_{t-1}, \mathcal{D}_t)$.
-3. Final harness $H_T$ is used for evaluation.
+1. Start from initial harness $H_0$.
+2. For $t = 1, \dots, T$:
+   - Agent $A_{t-1}$ attempts tasks $\mathcal{X}_t$, producing trajectories $(\tau_{t,x}, y_{t,x})$.
+   - Collect execution evidence $\mathcal{D}_t = \{(x, \tau_{t,x}, y_{t,x}) : x \in \mathcal{X}_t\}$.
+   - Evolver produces $H_t = \mathrm{Apply}(H_{t-1}, e(H_{t-1}, \mathcal{D}_t))$.
+3. After $T$ steps, final harness $H_T$ is obtained.
 
 ### Capability Metrics
+- **Base Capability**: $M_{\text{base}}(f) = J_{\mathcal{X}}(f, H_0)$, the agent's performance before evolution.
+- **Pairwise Evolution Gain**: $\Delta(f, e) = J_{\mathcal{X}}(f, H_T^{(f,e)}) - M_{\text{base}}(f)$.
+- **Harness-Updating Capability**: $\Delta_{\text{update}}(e) = \frac{1}{|\mathcal{F}^{\star}|} \sum_{f \in \mathcal{F}^{\star}} \Delta(f, e)$, mean gain across anchor agents $\mathcal{F}^{\star}$.
+- **Harness-Benefit Capability**: $\Delta_{\text{benefit}}(f) = \max_{e \in \mathcal{E}^{\star}} \Delta(f, e)$, maximum gain across anchor evolvers $\mathcal{E}^{\star}$.
 
-- **Base Capability** of model $f$:
-  $$M_{\mathrm{base}}(f) = J_{\mathcal{X}}(f, H_0).$$
-- **Pairwise Evolution Gain** for agent $f$ and evolver $e$:
-  $$\Delta(f, e) = J_{\mathcal{X}}\bigl(f, H_T^{(f,e)}\bigr) - M_{\mathrm{base}}(f).$$
-- **Harness‑Updating Capability** of evolver $e$ (mean gain over anchor agents $\mathcal{F}^{\star}$):
-  $$\Delta_{\mathrm{update}}(e) = \frac{1}{|\mathcal{F}^{\star}|} \sum_{f\in\mathcal{F}^{\star}} \Delta(f, e).$$
-- **Harness‑Benefit Capability** of agent $f$ (maximum gain over anchor evolvers $\mathcal{E}^{\star}$):
-  $$\Delta_{\mathrm{benefit}}(f) = \max_{e\in\mathcal{E}^{\star}} \Delta(f, e).$$
+These metrics disentangle the two roles and enable testing their relationship to base capability.
 
-All metrics use pass rate as $J_{\mathcal{X}}$, and evaluation is **in‑situ**: each task is scored under the harness active at the time of its attempt, before its evidence is used to produce the next harness.
+### Experimental Setup
+Evaluation on three benchmarks: [SWE-bench Verified](https://arxiv.org/abs/2406.11719), [MCP-Atlas](https://scholar.google.com/scholar?q=MCP-Atlas+benchmark), and [SkillsBench](https://scholar.google.com/scholar?q=SkillsBench+benchmark). Seven LLMs: [Claude Opus 4.6](https://www.anthropic.com/claude), [Claude Sonnet 4.6](https://www.anthropic.com/claude), [Claude Haiku 4.5](https://www.anthropic.com/claude), [Qwen3-235B-A22B](https://arxiv.org/abs/2505.17200), [Qwen3-32B](https://arxiv.org/abs/2505.17200), [Qwen3.5-9B](https://scholar.google.com/scholar?q=Qwen3.5-9B), [GPT-OSS-120B](https://scholar.google.com/scholar?q=GPT-OSS-120B). For evolver-side analysis, anchor agents $\mathcal{F}^{\star}$ = {Opus 4.6, Sonnet 4.6, Qwen3-235B}; for agent-side analysis, anchor evolvers $\mathcal{E}^{\star}$ = {Opus 4.6, Sonnet 4.6, Qwen3-235B}. Pass rate is primary metric, evaluated in-situ (tasks scored under pre-update harness). Harness components editable: skills (SWE, SB) and skills+prompts+memory (MCP). Fixed prompt templates across all backbones.
 
 ## Evidence & Validation
 
@@ -121,9 +110,9 @@ Both evolved skills encode procedurally similar guidance and enable the same age
 *Figure 5: MCP post-evolution scores: for each anchor agent every blue dot is one of seven evolved scores and the black tick is the no-evolve baseline. Within-agent variation across evolvers is small relative to between-agent variation in base capability.*
 
 
-![Figure 6: Δbenefit\Delta_{\mathrm{benefit}} versus base pass rate on SWE. Each point is one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate. MCP and SB analogues are in Appendix D.2.](figures/figure_5.png)
+![Figure 6: $\Delta_{\mathrm{benefit}}$ versus base pass rate on SWE. Each point is one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate. MCP and SB analogues are in Appendix D.2.](figures/figure_5.png)
 
-*Figure 6: Δbenefit\Delta_{\mathrm{benefit}} versus base pass rate on SWE. Each point is one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate. MCP and SB analogues are in Appendix D.2.*
+*Figure 6: $\Delta_{\mathrm{benefit}}$ versus base pass rate on SWE. Each point is one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate. MCP and SB analogues are in Appendix D.2.*
 
 
 ![Figure 7: Two harness-benefit failure modes for Qwen3-32B on SkillsBench.
@@ -143,91 +132,62 @@ Blue dots show scores obtained with the seven evolvers, and the black tick marks
 Each anchor task-solving agent is instantiated with a different LLM backbone: Opus 4.6, Sonnet 4.6, or Qwen3-235B.
 Blue dots show scores obtained with the seven evolvers, and the black tick marks the no-evolution baseline.*
 
-### Experimental Setup
-- **Benchmarks**: [SWE‑bench Verified](https://arxiv.org/abs/2310.06770) (SWE), [MCP‑Atlas](https://scholar.google.com/scholar?q=MCP-Atlas+benchmark) (MCP), [SkillsBench](https://arxiv.org/search/?query=SkillsBench+benchmark+Li+2026&searchtype=all) (SB).
-- **Models**: Seven LLMs spanning capability tiers:
-  - Closed-source: [Claude Opus 4.6](https://www.anthropic.com/claude), [Claude Sonnet 4.6](https://www.anthropic.com/claude), [Claude Haiku 4.5](https://www.anthropic.com/claude).
-  - Open-source: [Qwen3‑235B‑A22B](https://arxiv.org/search/?query=Qwen3+235B+2025&searchtype=all), [Qwen3‑32B](https://arxiv.org/search/?query=Qwen3+32B+2025&searchtype=all), [Qwen3.5‑9B](https://arxiv.org/search/?query=Qwen3.5+9B+2026&searchtype=all), [GPT‑OSS‑120B](https://arxiv.org/search/?query=GPT-OSS-120B+2025&searchtype=all).
-- Anchor agents $\mathcal{F}^{\star}$: Opus 4.6, Sonnet 4.6, Qwen3‑235B.
-- Anchor evolvers $\mathcal{E}^{\star}$: Opus 4.6, Sonnet 4.6, Qwen3‑235B.
+### Evolver-side Analysis (Harness-Updating)
+**Observation 1: Harness-updating is flat in base capability.** Across evolvers, $\Delta_{\text{update}}$ span is at most 3.1 pp on any benchmark. No evolver dominates all benchmarks; e.g., [Qwen3-235B](https://arxiv.org/abs/2505.17200) leads SWE (8.2 pp) but trails MCP (0.6 pp). The smallest model [Qwen3.5-9B](https://scholar.google.com/scholar?q=Qwen3.5-9B) achieves the highest SB gain (3.8 pp), surpassing [Opus 4.6](https://www.anthropic.com/claude) (2.3 pp) and [Qwen3-235B](https://arxiv.org/abs/2505.17200) (1.5 pp).
 
-### Evolver‑Side Analysis: Harness‑Updating ($\Delta_{\mathrm{update}}$)
+*Case Study*: On [SkillsBench](https://scholar.google.com/scholar?q=SkillsBench+benchmark) task flink-query, skills evolved by Qwen3.5-9B and Opus 4.6 are procedurally isomorphic (same five-step solution), only surface differences. Both yield perfect score when injected into the same Opus 4.6 agent.
 
-**Observation 1 – Flatness across evolvers**
-| Benchmark | Best Evolver (gain) | Worst Evolver (gain) | Spread |
-|-----------|---------------------|----------------------|--------|
-| SWE       | Qwen3‑235B (8.2 pp) | Qwen3.5‑9B (5.1 pp)  | 3.1 pp |
-| MCP       | Opus 4.6 (2.8 pp)  | Qwen3‑235B (0.6 pp)  | 2.2 pp |
-| SB        | Qwen3.5‑9B (3.8 pp) | Opus 4.6 (2.3 pp)    | 1.5 pp |
+**Observation 2: Post-evolution score dominated by agent's base capability.** Within-agent spread across evolvers is at most 5.1 pp, versus between-agent base-capability gap of up to 36.0 pp. Even the strongest agent with its worst evolver outperforms the weakest agent with its best evolver by 18.6--35.2 pp across benchmarks.
 
-No evolver dominates all benchmarks; the smallest model (Qwen3.5‑9B) tops SB. Case study: on a SkillsBench task, the 9B evolver produced a skill with the same procedural steps as Opus 4.6, yielding identical downstream pass.
+### Agent-side Analysis (Harness-Benefit)
+**Observation 1: $\Delta_{\text{benefit}}$ is non-monotonic in base capability.** On SWE, peak at [Qwen3-235B](https://arxiv.org/abs/2505.17200) (19.3 pp), while the weaker [Qwen3-32B](https://arxiv.org/abs/2505.17200) gains only 4.4 pp and the stronger [Opus 4.6](https://www.anthropic.com/claude) gains 2.6 pp. On MCP, peak at [GPT-OSS-120B](https://scholar.google.com/scholar?q=GPT-OSS-120B) (7.0 pp). Ceiling effect explains high-end, but low-end bottleneck is different.
 
-**Observation 2 – Post‑evolution score dominated by agent’s base capability**
-- Within‑agent spread across evolvers ≤ 5.1 pp (Qwen3‑235B on MCP), versus a 36.0 pp gap between the strongest and weakest agents’ base capabilities.
-- Even the weakest anchor agent paired with its best evolver still underperforms the strongest agent with its worst evolver by 18.6–35.2 pp on all benchmarks.
+**Observation 2: Weak-tier models fail due to harness activation and adherence failures.**
 
-Take‑away: allocate capability budget to the task‑solving agent, not the evolver.
+- *Harness Activation Failure*: Skill-Load Rate (SLR) drops from $\approx 0.96$ for strong models to 0.251 for Qwen3-32B. They often fail to emit a valid standalone `load_skill` action.
+- *Harness Adherence Failure*: Harness-Following Rate (HFR) of Qwen3-32B is only 0.142 vs 0.757 for Opus 4.6. Even after loading, weak models do not follow the skill's procedure.
+- *Long-horizon drift*: Phase-level adherence scores show Qwen3-32B drops from 0.52 after loading to 0.13 at final validation, while Opus 4.6 stays stable (0.89 to 0.80). GPT-OSS-120B drifts from 0.67 to 0.43.
 
-### Agent‑Side Analysis: Harness‑Benefit ($\Delta_{\mathrm{benefit}}$)
-
-**Observation 1 – Non‑monotonic benefit**
-| Model | Base Pass (SWE/MCP/SB) | $\Delta_{\mathrm{benefit}}$ (SWE/MCP/SB) |
-|-------|------------------------|--------------------------------------|
-| Opus 4.6    | 68.5 / 59.6 / 42.0 | 2.6 / 3.4 / 2.3 |
-| Sonnet 4.6  | 48.6 / 52.0 / 26.5 | 9.6 / 2.8 / 6.8 |
-| Haiku 4.5   | 29.4 / 35.6 / 5.8  | 5.6 / 2.8 / **15.1** |
-| GPT‑OSS‑120B| 17.5 / 28.0 / 0.0  | 15.2 / **7.0** / 2.3 |
-| Qwen3‑235B  | 15.0 / 23.6 / 4.7  | **19.3** / 2.0 / 1.1 |
-| Qwen3‑32B   | 6.6 / 17.0 / 0.0   | 4.4 / 1.2 / 1.2 |
-
-Mid‑tier models (GPT‑OSS‑120B, Qwen3‑235B) gain most; strong models hit ceiling; weak models gain little despite large headroom.
-
-**Observation 2 – Failure modes of weak‑tier models**
-1. **Harness activation failure** – models do not reliably bring harness artifacts into context:
-   | Model | Skill‑Load Rate (SLR) |
-   |-------|-----------------------|
-   | Opus 4.6    | 0.961 |
-   | Sonnet 4.6  | 0.957 |
-   | Qwen3‑235B  | 0.961 |
-   | GPT‑OSS‑120B| 0.446 |
-   | Qwen3‑32B   | 0.251 |
-   
-2. **Harness adherence failure** – even when loaded, models fail to follow guidance (low Harness‑Following Rate, HFR):
-   | Model | HFR | Pass‑When‑Loaded (LPR) |
-   |-------|-----|-------------------------|
-   | Opus 4.6    | 0.757 | 0.177 |
-   | Qwen3‑235B  | 0.350 | 0.022 |
-   | Qwen3‑32B   | 0.142 | 0.000 |
-
-   Phase‑level drift analysis shows weak models lose adherence as the trajectory unfolds (Qwen3‑32B: 0.52 → 0.13; Opus: 0.89 → 0.80).
-
-Take‑away: agent training should target harness invocation and long‑horizon instruction following.
+### Key Takeaways
+1. **Allocate capability budget to the task-solving agent, not the evolver.** Harness-updating gains vary little across evolver models; post-evolution performance is determined primarily by the agent's base capability.
+2. **Train agents for harness invocation.** Low SLR indicates that weak models need explicit training to reliably load relevant harness artifacts.
+3. **Strengthen long-horizon instruction following.** Even after loading, adherence decays drastically for weak models; training must target sustained guidance compliance over long trajectories.
 
 ## Critical Analysis
 
-The paper presents a carefully designed analysis that successfully disentangles two facets of self-evolving LLM agents: harness‑updating and harness‑benefit. However, several methodological weaknesses limit the strength of its conclusions. The lack of statistical reporting, reliance on unvalidated LLM judges, and anecdotal case studies reduce the robustness of the claimed flatness and non‑monotonicity. The prescriptive takeaways may not generalize beyond the specific benchmarks and short evolution horizon studied. Overall, the work provides useful initial insights but would benefit from more rigorous validation and cautious framing of its claims.
+The paper offers a formal decomposition of self-evolution capabilities and provides empirical evidence across multiple models and benchmarks. However, several methodological and interpretive issues weaken the conclusions. The in-situ evaluation on the same task stream used for evolution risks overfitting, making it unclear whether gains reflect genuine improvement or memorization. The claim that harness‑updating is “flat” in base capability is based on small absolute spreads that may be context-dependent, and the reliance on a small anchor set and limited harness editing scope undermines generalizability. The failure analysis is confined to a single benchmark, and the LLM-based adherence metrics lack reliability validation. Finally, the prescriptive takeaways are not empirically tested, and the use of closed-source or non‑standard models limits reproducibility.
 
-- **[MEDIUM]** The paper reports point estimates without confidence intervals, standard deviations, or formal tests of statistical significance. The observed spreads (e.g., 3.1 percentage points across evolvers on SWE) and the non‑monotonic patterns could easily arise from random variation, especially given the modest absolute gains. This omission weakens the reliability of the main claims.
+- **[HIGH]** The paper uses an **in‑situ evaluation** where the same task stream $\mathcal{X}$ drives both evolution and evaluation. Although each task is scored *before* its own evidence is used for updates, the evolver still sees the entire distribution and can tailor the harness specifically to this set. No out‑of‑distribution or held‑out task set is tested, so the reported gains may reflect overfitting rather than genuine harness improvement. This weakens the external validity of the claimed capabilities.
 
-- **[MEDIUM]** The harness‑adherence analysis (Harness‑Following Rate and phase‑level adherence scores) is based entirely on an LLM judge ([Claude Sonnet 4.6](https://www.anthropic.com/claude)) whose judgments are not validated against human annotations or any ground‑truth. The judge may introduce systematic biases, and the measured adherence drift could be an artifact of the judge's own limitations, not genuine agent behavior.
+- **[MEDIUM]** The central claim that **harness‑updating is flat in base capability** is drawn from a maximum spread of only $3.1$ pp across evolvers on any benchmark. For benchmarks where gains are already small (e.g., MCP‑Atlas gains are in the single digits), this spread may be non‑negligible. Moreover, the “flatness” conclusion is sensitive to the choice of anchor agents $\mathcal{F}^{\star}$ (only three strong models) and the specific harness components that can be evolved. A wider set of agents or more complex harness configurations could produce larger variation, limiting the generality of the claim.
 
-- **[LOW]** The flatness of harness‑updating is supported by a single case study (flink‑query on [SkillsBench](https://arxiv.org/search/?query=SkillsBench+benchmark+Li+2026&searchtype=all)) showing procedural isomorphism between a 9B evolver and Opus 4.6. This anecdotal evidence is insufficient to establish a general pattern; a more systematic quantitative comparison of generated harnesses across many tasks is needed.
+- **[MEDIUM]** **Harness‑benefit capability** $\Delta_{\text{benefit}}(f)$ is defined as the *maximum* gain across a fixed set of anchor evolvers $\mathcal{E}^{\star}$. Using the max can inflate the apparent benefit for a particular agent if it happens to pair well with one evolver, and it does not reflect the expected gain a practitioner would obtain when the optimal evolver is not known a priori. A more robust metric (e.g., mean or median gain) would better characterize typical harness‑benefit.
 
-- **[MEDIUM]** The prescriptive advice to "allocate capability budget to the task‑solving agent, not the evolver" may over‑generalize from the studied settings (three specific benchmarks, one iteration budget \(T\), harness types limited to skills/prompts/memories). The evolver's contribution could be larger in different domains, with different harness designs, or over longer evolution horizons. The paper does not adequately discuss these boundary conditions.
+- **[MEDIUM]** The **failure‑mode analysis** (harness activation and adherence failures) is performed only on [SkillsBench](https://scholar.google.com/scholar?q=SkillsBench+benchmark) and not on [SWE‑bench Verified](https://arxiv.org/abs/2406.11719) or [MCP‑Atlas](https://scholar.google.com/scholar?q=MCP-Atlas+benchmark). The underlying mechanisms may differ across task types (code repair vs. tool use vs. diverse skill execution). The conclusion that weak‑tier models suffer from these specific failures is therefore benchmark‑specific and may not generalize.
 
-- **[LOW]** The harness‑benefit metric \(\Delta_{\text{benefit}}(f) = \max_{e \in \mathcal{E}^{\star}} \Delta(f,e)\) picks the best‑case pairing among only three anchor evolvers. This may overstate benefit and could obscure the underlying capability distribution; the observed non‑monotonic trend might be sensitive to the choice of anchor evolvers. Using the mean gain would have been more conservative and would strengthen the analysis.
+- **[MEDIUM]** The **Harness‑Following Rate (HFR) and phase‑level adherence** are judged by a single LLM ([Claude Sonnet 4.6](https://www.anthropic.com/claude)) without any reported inter‑annotator agreement, calibration against human judgments, or sensitivity analysis (e.g., varying judge models). This introduces potential bias and undermines the reliability of the adherence metrics.
+
+- **[MEDIUM]** The actionable takeaways—**allocating capability budget to the task‑solving agent, training for harness invocation, and strengthening long‑horizon instruction following**—are presented as prescriptive guidance, but no follow‑up experiment is provided to demonstrate that implementing these suggestions actually improves downstream performance. The paper remains at the level of diagnosis without validating the cure.
+
+- **[MEDIUM]** Several models used in the experiments are **not fully open or reproducible**: [Claude Opus 4.6](https://www.anthropic.com/claude), [Claude Sonnet 4.6](https://www.anthropic.com/claude), and [Claude Haiku 4.5](https://www.anthropic.com/claude) are proprietary; [GPT‑OSS‑120B](https://scholar.google.com/scholar?q=GPT-OSS-120B) appears to be a non‑standard identifier with limited public information. This hinders independent verification and reduces the practical value of the findings for researchers without access to these models.
+
+- **[LOW]** The **case study** on the [SkillsBench](https://scholar.google.com/scholar?q=SkillsBench+benchmark) task flink‑query shows that [Qwen3.5‑9B](https://scholar.google.com/scholar?q=Qwen3.5-9B) and [Opus 4.6](https://www.anthropic.com/claude) produce *procedurally isomorphic* skills based on five high‑level steps. However, only a single example is analyzed, and “isomorphism” is judged at a coarse granularity. The surface differences could matter on tasks requiring exact tool‑call syntax or handling edge cases, so the case does not robustly establish that small models routinely match the procedural content of frontier evolvers.
+
+- **[LOW]** The **evolution protocol uses a fixed prompt template** for all evolvers and agents. It is well‑known that LLM performance can be highly sensitive to prompt wording, and the observed flatness in harness‑updating might partly reflect suboptimal prompt‑model alignment for some backbones rather than an inherent lack of evolver differentiation. No prompt‑engineering iterations are reported.
+
+- **[LOW]** The **anchor sets** $\mathcal{F}^{\star}$ and $\mathcal{E}^{\star}$ each contain only three models. With such small anchor sets, estimates of $\Delta_{\text{update}}(e)$ and $\Delta_{\text{benefit}}(f)$ have high variance, and the choice of anchors could significantly shift the results. No bootstrap error bars or sensitivity analysis is provided.
 
 ## Related Papers
 
 
 
-- [Self-Evolving Agents: A Survey on Autonomous Self-Improvement in LLM Agents](https://arxiv.org/abs/arxiv:2402.10188) (arxiv:2402.10188): Provides foundational survey of self-evolving LLM agent paradigms and harness designs that the main paper critiques by separating update mechanics from performance benefits.
+- [Reflexion: Language Agents with Verbal Reinforcement Learning](https://arxiv.org/abs/2303.11366) (2303.11366): Introduces verbal self-reflection for iterative agent improvement, serving as a core baseline technique for self-evolving LLM agents that the main paper extends by separating harness updates from capability benefits.
 
-- [AgentBench: Evaluating LLMs as Agents](https://arxiv.org/abs/arxiv:2310.08535) (arxiv:2310.08535): Introduces the harness and benchmark protocols commonly updated in self-evolving agent papers; directly referenced when distinguishing harness changes from true evolution gains.
+- [Voyager: An Open-Ended Embodied Agent with Large Language Models](https://arxiv.org/abs/2305.16291) (2305.16291): Presents automatic skill library construction and curriculum-driven evolution in an embodied setting, a canonical example where harness updating is not distinguished from performance gains.
 
-- [EvoAgent: Towards Automatic Evolution of LLM Agents](https://arxiv.org/abs/arxiv:2403.14403) (arxiv:2403.14403): Demonstrates iterative agent evolution pipelines whose harness-update effects the main paper shows are often conflated with capability improvements.
+- [Generative Agents: Interactive Simulacra of Human Behavior](https://arxiv.org/abs/arXiv:2304.03442) (arXiv:2304.03442): Explores memory-augmented self-evolving agent architectures, highlighting shared challenges in prompt and memory evolution that motivate the disentanglement proposed in the main paper.
 
-- [Reflexion: Language Agents with Verbal Reinforcement Learning](https://arxiv.org/abs/arxiv:2307.02486) (arxiv:2307.02486): Early self-improvement method using verbal feedback loops; serves as a baseline the main paper extends by isolating harness versus evolution contributions.
+- [Self-Refine: Iterative Refinement with Self-Feedback](https://arxiv.org/abs/2310.11511) (2310.11511): Focuses on prompt-based iterative self-improvement for LLM agents, providing an evolution mechanism analyzed by the main paper for non-monotonic capability effects during harness updates.
 
 
 
@@ -236,13 +196,13 @@ The paper presents a carefully designed analysis that successfully disentangles 
 
 
 
-- **Model**: `deepseek-v4-pro` (DeepSeek) — 198279 tokens ($0.091306)
+- **Model**: `deepseek-v4-pro` (DeepSeek) — 61335 tokens ($0.034582)
 
-- **Model**: `grok-4.3` (Grok) — 1927 tokens ($0.001720)
+- **Model**: `grok-4.3` (Grok) — 2737 tokens ($0.001893)
 
-- **Total Report Generation Cost**: **$0.093026**
+- **Total Report Generation Cost**: **$0.036474**
 
 
 
 ---
-*Generated by ppagent on 2026-06-25 23:47 using deepseek-v4-pro*
+*Generated by ppagent on 2026-06-26 00:03 using deepseek-v4-pro*
