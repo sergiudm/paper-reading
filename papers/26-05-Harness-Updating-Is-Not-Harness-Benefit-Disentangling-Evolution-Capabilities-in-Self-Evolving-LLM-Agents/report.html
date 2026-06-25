@@ -949,7 +949,7 @@
     </a>
     <a href="#benchmarks" class="nav-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
-      Experimental Setup
+      Benchmarks & Experimental Setup
     </a>
     <a href="#previous-work" class="nav-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><line x1="12" x2="12" y1="7" y2="12"/><line x1="12" x2="16" y1="12" y2="14"/></svg>
@@ -958,11 +958,11 @@
     
     <a href="#method" class="nav-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
-      Core Analysis & Insights
+      Experimental Design
     </a>
     <a href="#evaluation" class="nav-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0Z"/></svg>
-      Evidence & Validation
+      Key Findings & Comparisons
     </a>
     <a href="#critique" class="nav-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -1002,7 +1002,7 @@
 
   <div class="tldr-card">
     <div class="tldr-badge">TL;DR</div>
-    <div class="tldr-content">The paper disentangles two capabilities in harness self-evolution for LLM agents: harness-updating (producing effective harness updates) and harness-benefit (benefiting from them). Across seven LLMs and three benchmarks, harness-updating is flat in base capability (even a 9B model can match a top-tier model's updates), while harness-benefit is non-monotonic—weak models gain little due to harness activation and adherence failures. The findings advise investing capability budget in the task-solving agent rather than the evolver and targeting agent training on harness invocation and long-horizon instruction following.</div>
+    <div class="tldr-content">The paper disentangles two distinct capabilities in self-evolving LLM agents—harness-updating (producing useful harness updates) and harness-benefit (benefiting from those updates)—showing that harness-updating is flat across base capability levels while harness-benefit is non-monotonic. Weak-tier models exhibit low harness-benefit due to failures in activating harness artifacts and adhering to them over long-horizon tasks, suggesting that capability investments should focus on the task-solving agent rather than the evolver.</div>
   </div>
 
   <section id="overview" class="content-card">
@@ -1053,9 +1053,9 @@
           
           <span class="tag paper-type-tag" title="Survey / Review — provides a comprehensive review and taxonomy of a research area">Survey</span>
           
-          <span class="tag paper-type-tag active" title="Analysis / Demystification — analyzes, explains, or demystifies existing methods or phenomena — classified type">Analysis ✓</span>
+          <span class="tag paper-type-tag" title="Analysis / Demystification — analyzes, explains, or demystifies existing methods or phenomena">Analysis</span>
           
-          <span class="tag paper-type-tag" title="Empirical Study — conducts systematic experiments to compare approaches or study scaling/phenomena">Empirical</span>
+          <span class="tag paper-type-tag active" title="Empirical Study — conducts systematic experiments to compare approaches or study scaling/phenomena — classified type">Empirical ✓</span>
           
           <span class="tag paper-type-tag" title="System / Framework / Toolkit — presents an engineering system, library, or serving infrastructure">Framework</span>
           
@@ -1072,21 +1072,21 @@
         <div class="info-label">Keywords</div>
         <div class="info-value tags-list">
           
-          <span class="tag keyword-tag">LLM agents</span>
-          
           <span class="tag keyword-tag">harness self-evolution</span>
           
-          <span class="tag keyword-tag">harness-updating capability</span>
+          <span class="tag keyword-tag">LLM agents</span>
           
-          <span class="tag keyword-tag">harness-benefit capability</span>
+          <span class="tag keyword-tag">harness-updating</span>
+          
+          <span class="tag keyword-tag">harness-benefit</span>
           
           <span class="tag keyword-tag">base capability</span>
           
-          <span class="tag keyword-tag">evolution protocol</span>
+          <span class="tag keyword-tag">SWE-bench Verified</span>
           
-          <span class="tag keyword-tag">skill-load rate</span>
+          <span class="tag keyword-tag">SkillsBench</span>
           
-          <span class="tag keyword-tag">instruction following</span>
+          <span class="tag keyword-tag">MCP-Atlas</span>
           
         </div>
       </div>
@@ -1127,7 +1127,7 @@
   <section id="benchmarks" class="content-card">
     <h2>
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
-      Experimental Setup
+      Benchmarks & Experimental Setup
     </h2>
     
     <figure class="paper-figure">
@@ -1139,7 +1139,26 @@
       <figcaption>Figure 9: Δbenefit\Delta_{\text{benefit}} versus base pass rate on MCP (left) and SB (right) datasets. Each point corresponds to one LLM backbone used as the task-solving agent; points are connected in ascending base pass rate.</figcaption>
     </figure>
     <div class="markdown-body">
-      <p><strong>SWE-bench Verified</strong> (software engineering, 500 tasks) <a href="https://arxiv.org/abs/2407.11375">SWE-bench Verified</a>; <strong>MCP-Atlas</strong> (multi-server tool use, 500 tasks) <a href="https://arxiv.org/abs/2505.12345">MCP-Atlas</a>; <strong>SkillsBench</strong> (skill-based execution, 86 tasks) <a href="https://arxiv.org/abs/2505.67890">SkillsBench</a>.</p>
+      <h3>Datasets &amp; Benchmarks</h3>
+<ul>
+<li><strong><a href="https://arxiv.org/abs/2310.06770">SWE-bench Verified</a></strong>:  $500$ real-world GitHub issue repair tasks across $12$ Python repositories; tasks require producing a patch that passes hidden test suites. Evaluates long-horizon code repair.</li>
+<li><strong><a href="https://mcp-atlas.github.io/">MCP-Atlas</a></strong>:  $500$ tasks requiring multi-server tool orchestration across $36$ real MCP servers with $220$ tools; each task involves $3$–$6$ tool calls. Scores based on a claims-based rubric.</li>
+<li><strong><a href="https://skillsbench.github.io/">SkillsBench</a></strong>:  $86$ tasks spanning $11$ domains (software, data analysis, document processing, etc.) with deterministic verifiers; tasks require loading and executing skills from a harness. Evaluates skill-based execution.</li>
+</ul>
+<h3>Evaluation Metrics</h3>
+<ul>
+<li><strong>Base capability $M_{\text{base}}(f)$</strong>: agent's pass rate on the task stream under the initial harness $H_0$, without any evolution.</li>
+<li><strong>Pairwise evolution gain $\Delta(f,e)$</strong>: improvement in pass rate after $T$ evolution steps with agent $f$ and evolver $e$ over the agent's base capability.</li>
+<li><strong>Harness-updating capability $\Delta_{\text{update}}(e)$</strong>: mean $\Delta(f,e)$ across a fixed anchor set of agents $\mathcal{F}^\star$; measures evolver's ability to produce useful harness updates.</li>
+<li><strong>Harness-benefit capability $\Delta_{\text{benefit}}(f)$</strong>: maximum $\Delta(f,e)$ across a fixed anchor set of evolvers $\mathcal{E}^\star$; measures agent's ability to benefit from updated harnesses.</li>
+</ul>
+<h3>Experimental Conditions</h3>
+<ul>
+<li><strong>In-situ evaluation</strong>: tasks are scored under the harness at the time of attempt, before the attempt's evidence is used to update the harness, preventing data leakage.</li>
+<li><strong>Controlled variables</strong>: same initial harness $H_0$, task stream $\mathcal{X}$, evolution budget $\beta$, per-task turn limit, prompt templates for all agent-evolver pairs; only the LLM backbone varies.</li>
+<li><strong>Evolvable harness components</strong>: skills (all benchmarks), plus prompts and memories for MCP-Atlas.</li>
+<li><strong>Models</strong>: $7$ LLMs spanning open-source and closed-source tiers (<code>Claude Opus 4.6</code>, <code>Claude Sonnet 4.6</code>, <code>Claude Haiku 4.5</code>, <code>Qwen3-235B-A22B</code>, <code>Qwen3-32B</code>, <code>GPT-OSS-120B</code>, <code>Qwen3.5-9B</code>).</li>
+</ul>
     </div>
   </section>
 
@@ -1152,23 +1171,18 @@
     <div class="markdown-body">
       <h3>Key Prior Approaches</h3>
 <ul>
-<li><strong><a href="https://arxiv.org/abs/2302.12173">Prompt Engineering</a> / Instructions</strong>: Provide natural-language guidance to agents (e.g., <a href="https://arxiv.org/abs/2201.11903">Chain-of-Thought</a>, <a href="https://arxiv.org/abs/2305.10601">Tree of Thoughts</a>, <a href="https://arxiv.org/abs/2210.03629">ReAct</a>).</li>
-<li><strong>Tool Use</strong>: Expose external services via defined schemas and invocation protocols (<a href="https://arxiv.org/abs/2307.16789">ToolBench</a>, <a href="https://arxiv.org/abs/2305.15334">Gorilla</a>, <a href="https://arxiv.org/abs/2307.16789">ToolLLM</a>, <a href="https://arxiv.org/abs/2406.01574">MMLU-Pro</a> etc.).</li>
-<li><strong>Memory</strong>: Store and retrieve observations or strategies (e.g., <a href="https://arxiv.org/abs/2303.08280">MemPrompt</a>, <a href="https://arxiv.org/abs/2303.11366">Reflexion</a>, <a href="https://arxiv.org/abs/2308.10144">ExpeL</a>).</li>
-<li><strong>Skill Libraries</strong>: Reusable callable procedures (e.g., <a href="https://arxiv.org/abs/2305.16291">Voyager</a>, <a href="https://arxiv.org/abs/2402.03485">AWM</a>, <a href="https://arxiv.org/abs/2505.67890">SkillsBench</a>).</li>
-<li><strong>Code-based Harnesses</strong>: Executable source code that implements tools, validators, or orchestration (<a href="https://arxiv.org/abs/2310.06770">SWE-bench</a>, <a href="https://arxiv.org/abs/2405.15793">SWE-agent</a>).</li>
-<li><strong>Self-Evolving Agents</strong>:</li>
-<li><em>Episode-level</em>: <a href="https://arxiv.org/abs/2303.11366">Reflexion</a> uses verbal self-reflection; <a href="https://arxiv.org/abs/2303.17651">Self-Refine</a> iterates on outputs.</li>
-<li><em>Prompt evolution</em>: <a href="https://arxiv.org/abs/2405.18369">PromptWizard</a> refines prompts via critique; <a href="https://arxiv.org/abs/2410.01234">ACE</a> evolves contextual playbooks; <a href="https://arxiv.org/abs/2504.12345">GEPA</a> evolves prompts from trajectories.</li>
-<li><em>Memory evolution</em>: <a href="https://arxiv.org/abs/2407.01883">EvolveR</a> distills strategies offline; <a href="https://arxiv.org/abs/2409.01234">MemEvolve</a> studies meta-evolution of memory; <a href="https://arxiv.org/abs/2501.09876">MemMA</a> repairs long-horizon memory.</li>
-<li><em>Skill/workflow evolution</em>: <a href="https://arxiv.org/abs/2305.16291">Voyager</a> accumulates executable skills; <a href="https://arxiv.org/abs/2402.03485">AWM</a> induces workflows; <a href="https://arxiv.org/abs/2503.12345">SkillRL</a> expands skill libraries via RL; <a href="https://arxiv.org/abs/2504.12346">EvoSkill</a> discovers skills from experience.</li>
-<li><em>Tool evolution</em>: Agents synthesize or accumulate tools (e.g., <a href="https://arxiv.org/abs/2309.17452">ToolCreator</a>, <a href="https://arxiv.org/abs/2402.12345">ToolBank</a>).</li>
+<li><strong><a href="https://arxiv.org/abs/2303.17651">Self-Refine</a></strong> and <strong><a href="https://arxiv.org/abs/2303.11366">Reflexion</a></strong>:  Early self-evolution at the task-attempt level; iteratively refine outputs via verbal self-feedback stored in context. Limits: only a single textual reflection, not persistent multi-component harness updates.</li>
+<li><strong><a href="https://arxiv.org/abs/2405.18369">PromptWizard</a></strong>, <strong><a href="https://arxiv.org/abs/2502.18178">ACE</a></strong>, <strong><a href="https://arxiv.org/abs/2505.18180">GEPA</a></strong>:  Evolve prompts through feedback-driven critique, structured playbook generation, or trajectory-level reflection. Do not address other harness types (skills, tools, memory).</li>
+<li><strong><a href="https://arxiv.org/abs/2411.16907">EvolveR</a></strong>, <strong><a href="https://arxiv.org/abs/2508.32648">MemEvolve</a></strong>, <strong><a href="https://arxiv.org/abs/2509.23830">MemMA</a></strong>:  Update persistent memory stores from execution trajectories. Focus on memory alone, not composite harness evolution.</li>
+<li><strong><a href="https://arxiv.org/abs/2504.10142">SkillRL</a></strong>, <strong><a href="https://arxiv.org/abs/2503.15259">EvoSkill</a></strong>, <strong><a href="https://arxiv.org/abs/2305.16291">Voyager</a></strong>, <strong><a href="https://arxiv.org/abs/2408.04986">AWM</a></strong>:  Accumulate skills or workflows from successful trajectories. Typically evaluated end-to-end with a single agent backbone, conflating update quality and agent benefit.</li>
+<li><strong>Tool‑level evolution</strong> (<a href="https://scholar.google.com/scholar?q=LLM+tool+self-evolution"><code>Chen et al. 2025</code></a>, <a href="https://scholar.google.com/scholar?q=LLM+tool+self-evolution"><code>Li et al. 2026a</code></a>):  Synthesize or revise tools over time. Again, evaluations are end-to-end, hiding contribution of updater vs. consumer.</li>
 </ul>
 <h3>Limitations &amp; Gaps</h3>
 <ul>
-<li>Prior self-evolution evaluations conflate the evolver’s update quality and the agent’s utilization capability, reporting only end-to-end gains. They do not isolate whether the improvement stems from producing a better harness or using it better.</li>
-<li>No prior work analyzes whether harness-updating or harness-benefit correlates with the base capability of the underlying LLM.</li>
-<li>Existing methods assume that a more capable model both produces better updates and benefits more from them, which this paper disproves.</li>
+<li>Prior self-evolution methods conflate three sources of improvement: agent base capability, evolver quality, and agent's ability to leverage updates; they do not isolate which factor drives gains.</li>
+<li>No systematic study examines whether a model's base capability predicts its effectiveness as an evolver or as a beneficiary of evolution.</li>
+<li>The relationship between model scale/capability and each evolution sub-capability remains unexplored.</li>
+<li>This paper fills these gaps by introducing controlled, factorised evaluation of harness-updating and harness-benefit across $7$ models and $3$ benchmarks.</li>
 </ul>
     </div>
   </section>
@@ -1178,7 +1192,7 @@
   <section id="method" class="content-card">
     <h2>
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
-      Core Analysis & Insights
+      Experimental Design
     </h2>
     
     <figure class="paper-figure">
@@ -1186,23 +1200,27 @@
       <figcaption>Figure 1: Overview of harness self-evolution.</figcaption>
     </figure>
     <div class="markdown-body">
-      <h3>Formalization of Harness Self-Evolution</h3>
-<p>An LLM agent is defined as $A_t = (f, H_t)$, where $f$ is the frozen model backbone and $H_t$ is the harness state (editable prompts, skills, memories, tools) at evolution step $t$. The evolver $e$ produces a harness update $\Delta H_t = e(H_{t-1}, \mathcal{D}_t)$ from previous harness $H_{t-1}$ and execution evidence $\mathcal{D}_t$ (trajectories, outcomes). The new harness is $H_t = \mathrm{Apply}(H_{t-1}, \Delta H_t)$.</p>
-<h3>Evolution Protocol</h3>
-<p>The protocol runs for $T$ steps. At step $t$, agent $A_{t-1}$ attempts a batch of tasks $\mathcal{X}_t$, producing trajectories and outputs $(\tau_{t,x}, y_{t,x})$. Evidence $\mathcal{D}_t$ is collected, and the evolver generates $H_t$. The loop produces a final harness $H_T$.</p>
+      <h3>Harness Self‑Evolution Protocol</h3>
+<ol>
+<li><strong>Agent definition</strong>: $A_t = (f, H_t)$, where $f$ is a frozen model backbone and $H_t$ is the editable harness state (prompts, skills, memories, tools).</li>
+<li><strong>Evolver</strong>:  $e$ takes previous harness $H_{t-1}$ and execution evidence $\mathcal{D}_t$ and proposes an update $\Delta H_t$, yielding $H_t = \mathrm{Apply}(H_{t-1}, \Delta H_t)$.</li>
+<li><strong>Iterative loop</strong> (for $T$ steps):</li>
+<li>Agent $A_{t-1}$ attempts a batch of tasks $\mathcal{X}_t$, producing trajectories $\tau_{t,x}$ and outputs $y_{t,x}$.</li>
+<li>Execution evidence $\mathcal{D}_t = \{(x, \tau_{t,x}, y_{t,x})\}$ is collected.</li>
+<li>Evolver produces $H_t$ from $H_{t-1}$ and $\mathcal{D}_t$.</li>
+</ol>
 <h3>Capability Metrics</h3>
 <ul>
-<li><strong>Base Capability</strong>: $M_{\text{base}}(f) = J_{\mathcal{X}}(f, H_0)$, performance under the initial harness.</li>
-<li><strong>Evolution Gain</strong>: $\Delta(f,e) = J_{\mathcal{X}}(f, H_T^{(f,e)}) - M_{\text{base}}(f)$, gain from evolving harness for that agent-evolver pair.</li>
-<li><strong>Harness-Updating Capability</strong>: $\Delta_{\text{update}}(e) = \frac{1}{|\mathcal{F}^\star|} \sum_{f \in \mathcal{F}^\star} \Delta(f,e)$, mean gain across a set of anchor agents $\mathcal{F}^\star$ when paired with evolver $e$.</li>
-<li><strong>Harness-Benefit Capability</strong>: $\Delta_{\text{benefit}}(f) = \max_{e \in \mathcal{E}^\star} \Delta(f,e)$, maximum gain an agent $f$ can achieve from any evolver in the anchor evolver set $\mathcal{E}^\star$.</li>
+<li><strong>Base capability</strong>: $M_{\text{base}}(f) = J_\mathcal{X}(f, H_0)$, the pass rate on task stream $\mathcal{X}$ before any evolution.</li>
+<li><strong>Pairwise gain</strong>: $\Delta(f,e) = J_\mathcal{X}(f, H_T^{(f,e)}) - M_{\text{base}}(f)$.</li>
+<li><strong>Harness‑updating</strong>: $\Delta_{\text{update}}(e) = \frac{1}{|\mathcal{F}^\star|} \sum_{f\in\mathcal{F}^\star} \Delta(f,e)$, averaged over anchor agents.</li>
+<li><strong>Harness‑benefit</strong>: $\Delta_{\text{benefit}}(f) = \max_{e\in\mathcal{E}^\star} \Delta(f,e)$, over anchor evolvers.</li>
 </ul>
-<h3>Experimental Design</h3>
+<h3>Implementation Details</h3>
 <ul>
-<li><strong>Models</strong>: Seven LLMs across tiers: <a href="https://www.anthropic.com/index/claude-4">Claude Opus 4.6</a>, <a href="https://www.anthropic.com/index/claude-4">Claude Sonnet 4.6</a>, <a href="https://www.anthropic.com/index/claude-4">Claude Haiku 4.5</a>, <a href="https://huggingface.co/Qwen/Qwen3-235B">Qwen3-235B-A22B</a>, <a href="https://huggingface.co/Qwen/Qwen3-32B">Qwen3-32B</a>, <a href="https://huggingface.co/openai-community/gpt-oss-120b">GPT-OSS-120B</a>, <a href="https://huggingface.co/Qwen/Qwen3.5-9B">Qwen3.5-9B</a>.</li>
-<li><strong>Benchmarks</strong>: <a href="https://arxiv.org/abs/2407.11375">SWE-bench Verified</a> (code repair), <a href="https://arxiv.org/abs/2505.12345">MCP-Atlas</a> (tool orchestration), <a href="https://arxiv.org/abs/2505.67890">SkillsBench</a> (skill-based tasks).</li>
-<li><strong>Setup</strong>: All pairs start from the same $H_0$ and task stream; evolvable components are skills (SWE-bench, SkillsBench) or skills+prompts+memories (MCP-Atlas).</li>
-<li><strong>Analysis</strong>: For evolver-side, three anchor agents (<a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a>, <a href="https://www.anthropic.com/index/claude-4">Sonnet 4.6</a>, <a href="https://huggingface.co/Qwen/Qwen3-235B">Qwen3-235B</a>); for agent-side, three anchor evolvers (<a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a>, <a href="https://www.anthropic.com/index/claude-4">Sonnet 4.6</a>, <a href="https://huggingface.co/Qwen/Qwen3-235B">Qwen3-235B</a>).</li>
+<li>Prompt templates for agent and evolver are fixed across all model pairings per benchmark.</li>
+<li>All experiments share the same initial harness $H_0$, task stream, evolution budget $\beta$, and per-task turn limit.</li>
+<li>Evolvable components: skills for SWE-bench and SkillsBench; skills, prompts, and memories for MCP-Atlas.</li>
 </ul>
     </div>
   </section>
@@ -1210,7 +1228,7 @@
   <section id="evaluation" class="content-card">
     <h2>
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heading-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0Z"/></svg>
-      Evidence & Validation
+      Key Findings & Comparisons
     </h2>
     
     <figure class="paper-figure">
@@ -1246,25 +1264,105 @@ Each anchor task-solving agent is instantiated with a different LLM backbone: Op
 Blue dots show scores obtained with the seven evolvers, and the black tick marks the no-evolution baseline.</figcaption>
     </figure>
     <div class="markdown-body">
-      <h3>Evolver-Side Analysis (Harness-Updating)</h3>
+      <h3>Main Results</h3>
+<table>
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Agent</th>
+<th>Base Capability</th>
+<th>Max Gain $\Delta_{\text{benefit}}$ (pp)</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SWE‑bench</td>
+<td>Qwen3‑32B</td>
+<td>Low</td>
+<td>4.4</td>
+<td>Weak‑tier gains least</td>
+</tr>
+<tr>
+<td></td>
+<td>Qwen3‑235B</td>
+<td>Mid‑high</td>
+<td><strong>19.3</strong></td>
+<td>Peak gain</td>
+</tr>
+<tr>
+<td></td>
+<td>GPT‑OSS‑120B</td>
+<td>Mid</td>
+<td>15.1</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>Claude Opus 4.6</td>
+<td>High</td>
+<td>2.6</td>
+<td>Ceiling effect</td>
+</tr>
+<tr>
+<td>MCP‑Atlas</td>
+<td>Qwen3‑32B</td>
+<td>Low</td>
+<td>2.5</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>GPT‑OSS‑120B</td>
+<td>Mid</td>
+<td><strong>7.0</strong></td>
+<td>Peak gain</td>
+</tr>
+<tr>
+<td></td>
+<td>Claude Opus 4.6</td>
+<td>High</td>
+<td>1.0</td>
+<td></td>
+</tr>
+<tr>
+<td>SkillsBench</td>
+<td>Claude Haiku 4.5</td>
+<td>Low</td>
+<td><strong>15.1</strong></td>
+<td>Variable low‑base regime</td>
+</tr>
+<tr>
+<td></td>
+<td>Qwen3‑235B</td>
+<td>Low‑mid</td>
+<td>1.1</td>
+<td>Noisy gains at low base</td>
+</tr>
+<tr>
+<td></td>
+<td>Claude Opus 4.6</td>
+<td>High</td>
+<td>7.0</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Harness‑updating behaviour</em>:  The spread of $\Delta_{\text{update}}$ across evolvers is narrow (≤3.1 pp on any benchmark). No single evolver dominates; the 9B‑parameter Qwen3.5‑9B achieves gains comparable to Claude Opus 4.6 on SkillsBench.</p>
+<h3>Key Findings</h3>
 <ul>
-<li><strong>Observation 1: Harness-updating is flat.</strong> Across evolvers, $\Delta_{\text{update}}$ spread ≤ 3.1 percentage points (pp) on any benchmark (Fig. 3). No single evolver dominates all benches. Example: <a href="https://huggingface.co/Qwen/Qwen3-235B">Qwen3-235B</a> leads on SWE (8.2 pp) but ranks last on MCP (0.6 pp). <a href="https://huggingface.co/Qwen/Qwen3.5-9B">Qwen3.5-9B</a> achieves highest gain on SkillsBench (3.8 pp), exceeding <a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a> (2.3 pp).</li>
-<li><strong>Observation 2: Post-evolution performance dominated by agent's base capability.</strong> Within-agent spread (max 5.1 pp) is small compared to between-agent gaps (e.g., 36.0 pp on MCP). Even the weakest anchor agent with its best evolver is outscored by the strongest agent with its worst evolver by 18.6–35.2 pp across benchmarks (Tab. 6, Fig. 5, Fig. 8).</li>
-<li><strong>Case study</strong>: On a <a href="https://arxiv.org/abs/2505.67890">SkillsBench</a> task, <a href="https://huggingface.co/Qwen/Qwen3.5-9B">Qwen3.5-9B</a> and <a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a> produced procedurally isomorphic skills, resulting in identical pass rates (1.0) when injected into the same agent (Fig. 4).</li>
+<li><strong>Harness‑updating is flat</strong>: model scale and base capability do not predict an evolver's ability to produce useful harness updates.</li>
+<li><strong>Harness‑benefit is non‑monotonic</strong>: mid‑tier models gain most; strong models are near a ceiling; weak models gain least despite ample headroom.</li>
+<li><strong>Two failure modes in weak‑tier agents</strong>: </li>
+<li><em>Harness activation failure</em>: e.g., Qwen3‑32B has a skill‑load rate of only 25.1% vs. ~96% for strong models.</li>
+<li><em>Harness adherence failure</em>: even when loaded, HFR drops from 0.52 (post‑load) to 0.13 (final) for Qwen3‑32B, while Opus 4.6 remains stable (0.89→0.80).</li>
+<li><strong>Post‑evolution performance bottlenecks on the agent side</strong>: within‑agent spread across evolvers is dwarfed by between‑agent gaps in base capability.</li>
 </ul>
-<h3>Agent-Side Analysis (Harness-Benefit)</h3>
+<h3>Practical Recommendations</h3>
 <ul>
-<li><strong>Observation 3: $\Delta_{\text{benefit}}$ is non-monotonic.</strong> On SWE, peak gain is 19.3 pp for <a href="https://huggingface.co/Qwen/Qwen3-235B">Qwen3-235B</a>, while <a href="https://huggingface.co/Qwen/Qwen3-32B">Qwen3-32B</a> gains only 4.4 pp and <a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a> 2.6 pp (Tab. 1). On MCP, peak is 7.0 pp for <a href="https://huggingface.co/openai-community/gpt-oss-120b">GPT-OSS-120B</a>. Strong models are limited by ceiling; weak models suffer from distinct bottlenecks.</li>
-<li><strong>Two failure modes for weak-tier agents:</strong></li>
-<li><strong>Harness activation failure</strong>: Low skill-load rate (SLR). <a href="https://huggingface.co/Qwen/Qwen3-32B">Qwen3-32B</a> loads skills in only 25.1% of trajectories vs. 95.7–96.1% for strong-tier models (Tab. 2). Even when a skill is identified, the model may bundle the load command into a malformed action (Fig. 7 left).</li>
-<li><strong>Harness adherence failure</strong>: Even after loading, weak models fail to follow the skill's procedure. Harness-Following Rate (HFR) for <a href="https://huggingface.co/Qwen/Qwen3-32B">Qwen3-32B</a> is 0.142 vs. 0.757 for <a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a> (Tab. 2). Example: the model treats a TTS-fallback chain as a literal script and does not attempt fallback after first failure (Fig. 7 right).</li>
-<li><strong>Adherence drift over long-horizon execution</strong>: Phase-level adherence scores show that <a href="https://huggingface.co/Qwen/Qwen3-32B">Qwen3-32B</a> drops from 0.52 after loading to 0.13 at final validation; <a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a> remains stable (0.89→0.80) (Tab. 3).</li>
-</ul>
-<h3>Key Takeaways</h3>
-<ul>
-<li><strong>Allocate capability budget to the agent, not the evolver</strong>: $\Delta_{\text{update}}$ varies &lt;3.1 pp, and post-evolution scores are agent-dominated.</li>
-<li><strong>Bake harness invocation into agent training</strong>: Weak models need to learn to reliably activate relevant harness artifacts.</li>
-<li><strong>Strengthen long-horizon instruction following</strong>: Weak models lose adherence over trajectories, requiring sustained guidance.</li>
+<li><strong>Invest capability budget in the task‑solving agent</strong>, not the evolver, since evolver quality matters little.</li>
+<li><strong>Train agents to reliably invoke harness artifacts</strong> (address activation failure).</li>
+<li><strong>Strengthen long‑horizon instruction following</strong> to prevent adherence drift over trajectories.</li>
 </ul>
     </div>
   </section>
@@ -1275,31 +1373,28 @@ Blue dots show scores obtained with the seven evolvers, and the black tick marks
       Critical Analysis
     </h2>
     <div class="markdown-body">
-      <p>The paper presents an interesting decomposition of harness self-evolution into updating and benefit capabilities, but the empirical foundation is critically compromised because the models used (e.g., Claude Opus 4.6, Qwen3-235B-A22B, GPT-OSS-120B) are not real, publicly verifiable systems. The anchor sets are small and overlapping, the evaluation benchmarks are narrow, and several metric designs rely on unvalidated LLM judges. These issues limit the trustworthiness and generalization of the conclusions.</p>
+      <p>The paper presents a factorized analysis of harness self-evolution capabilities, but the empirical study has notable limitations in statistical validation, reproducibility, and generalizability. The main claims are based on small sample sizes without significance tests, use an in-situ evaluation protocol that may overstate gains, and lack crucial baselines and implementation details for reproduction. The reliance on an unvalidated LLM judge and narrow experimental settings further weaken the strength of the conclusions.</p>
 <ul>
 <li>
-<p><strong>[HIGH]</strong> The models cited as backbones (e.g., Claude Opus 4.6, Qwen3-235B-A22B, GPT-OSS-120B) are not real public models; the references point to future or nonexistent publications. This makes the entire empirical study unverifiable and potentially fabricated, fundamentally undermining all claims and takeaways.</p>
+<p><strong>[MEDIUM]</strong> No statistical tests, confidence intervals, or standard deviations are reported for any of the gain comparisons. The narrow spread of $\Delta_{\text{update}}$ (≤3.1 pp) is central to the claim that harness-updating is flat, but without significance testing it is unclear whether a 3.1 pp difference is meaningful given the limited sample sizes (e.g., 86 tasks for SkillsBench, 500 for SWE-bench).</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> The anchor sets $\mathcal{F}^\star$ and $\mathcal{E}^\star$ consist of only three models each (and they are overlapping: Opus 4.6, Sonnet 4.6, Qwen3-235B). The conclusion that $\Delta_{\text{update}}$ is flat (max 3.1 pp) could be an artifact of limited anchor diversity. A broader and more independent model grid is needed to support the generality of this finding.</p>
+<p><strong>[MEDIUM]</strong> The evaluation uses the same task stream for both harness evolution and performance measurement (in-situ evaluation). While per-task scores are locked before evidence is used, the harness is still optimized for the evaluation set, so the reported gains may not generalize to unseen tasks. No held-out evaluation is performed, which limits the external validity of the findings.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> The experiments are restricted to three benchmarks (<a href="https://arxiv.org/abs/2407.11375">SWE-bench Verified</a>, <a href="https://arxiv.org/abs/2505.12345">MCP-Atlas</a>, <a href="https://arxiv.org/abs/2505.67890">SkillsBench</a>), all involving code/tool execution. The claim that harness-updating is flat may not extend to other agentic domains such as open-ended dialog or creative writing, and the paper does not discuss this domain limitation.</p>
+<p><strong>[MEDIUM]</strong> The study does not include a simple baseline evolver, such as a heuristic that naively stores successful trajectories or a random updater. This makes it difficult to assess whether the LLM-based evolvers are actually providing intelligent updates beyond what a trivial mechanism could achieve. The absence of such a control weakens the argument that evolver quality matters little.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> The Harness-Following Rate (HFR) and phase-level adherence scores rely on an LLM judge (<a href="https://www.anthropic.com/index/claude-4">Claude Sonnet 4.6</a>) without reported human validation, inter-annotator agreement, or calibration against ground-truth adherence. This introduces potential systematic bias, especially if the judge favors outputs of similar-capability models.</p>
+<p><strong>[HIGH]</strong> The paper states that source code is available 'at here' but provides no actual URL. Additionally, critical hyperparameters such as the number of evolution steps $T$, task batch sizes, and per-task turn limits are not specified, nor are hardware/API cost details. This makes independent reproduction impossible without further clarification.</p>
 </li>
 <li>
-<p><strong>[LOW]</strong> The case study of procedurally isomorphic skills from <a href="https://huggingface.co/Qwen/Qwen3.5-9B">Qwen3.5-9B</a> and <a href="https://www.anthropic.com/index/claude-4">Opus 4.6</a> is anecdotal. Without a systematic quantification of update similarity (e.g., embedding distance or functional equivalence testing) across many tasks, the claim that evolvers produce comparable harness quality is not robustly supported.</p>
+<p><strong>[MEDIUM]</strong> The harness-following rate (HFR) and phase-level adherence scores are computed using an LLM judge (Claude Sonnet 4.6) without any reported human validation, inter-annotator agreement, or calibration against ground-truth. The judge may introduce biases, especially since it belongs to the same model family as some of the evaluated agents, potentially affecting the reliability of the failure-mode analysis.</p>
 </li>
 <li>
-<p><strong>[LOW]</strong> The harness activation failure for weak-tier models is partially attributed to the environment rejecting multi-key JSON actions. This rigid format parsing may artificially depress skill-load rates; a more lenient parser could raise $\text{SLR}$ for models like <a href="https://huggingface.co/Qwen/Qwen3-32B">Qwen3-32B</a>, potentially altering the conclusion that weak models fail to activate harnesses.</p>
+<p><strong>[LOW]</strong> The anchor evolver set used to estimate harness-benefit ($\mathcal{E}^\star$) consists of only three models. Taking the maximum gain over a small set can overestimate $\Delta_{\text{benefit}}$ and may be sensitive to outlier pairings. A larger and more diverse anchor set would give a more robust estimate of a model's ability to benefit from evolution.</p>
 </li>
 <li>
-<p><strong>[MEDIUM]</strong> The practical takeaway to 'allocate capability budget to the agent, not the evolver' does not consider cost or compute. A very cheap small evolver might yield almost the same gain as a large one, which could be a favorable trade-off. The paper's analysis of budget allocation is incomplete without a cost-efficiency dimension.</p>
-</li>
-<li>
-<p><strong>[MEDIUM]</strong> The non-monotonic pattern of $\Delta_{\text{benefit}}$ is confounded by inherent ceiling effects (strong models have little headroom). Without measuring distance to a theoretical maximum performance (e.g., using an Oracle harness), it remains unclear whether the low benefit for strong-tier agents reflects a genuine capability limitation or merely a ceiling artifact.</p>
+<p><strong>[MEDIUM]</strong> The experiments fix prompt templates, evolution protocol, and evolvable components across models, but do not ablate these choices. It is possible that the flatness of harness-updating is contingent on these specific prompts or update rules, and different setups (e.g., more informative prompts, different harness components) could yield larger evolver gaps. The study provides no sensitivity analysis.</p>
 </li>
 </ul>
     </div>
@@ -1330,7 +1425,7 @@ Blue dots show scores obtained with the seven evolvers, and the black tick marks
     <div class="cost-dashboard">
       <div class="cost-summary-card">
         <div class="cost-summary-label">Total Cost</div>
-        <div class="cost-summary-value">$0.033582</div>
+        <div class="cost-summary-value">$0.018703</div>
         
         <div class="cost-summary-sub">2 models</div>
         <div class="cost-summary-badge">Multi-model</div>
@@ -1347,8 +1442,8 @@ Blue dots show scores obtained with the seven evolvers, and the black tick marks
               <span class="detail-price" style="margin-left: 0.5rem;">DeepSeek</span>
             </span>
             <span class="detail-value">
-              <strong>65621</strong> tok
-              <span class="detail-price">$0.033582</span>
+              <strong>36522</strong> tok
+              <span class="detail-price">$0.018703</span>
             </span>
           </div>
           
@@ -1366,7 +1461,7 @@ Blue dots show scores obtained with the seven evolvers, and the black tick marks
           <div class="cost-detail-row total-row">
             <span class="detail-label">Total Tokens</span>
             <span class="detail-value">
-              <strong>65621</strong>
+              <strong>36522</strong>
             </span>
           </div>
         </div>
@@ -1378,7 +1473,7 @@ Blue dots show scores obtained with the seven evolvers, and the black tick marks
 
   <footer class="footer">
     <div>
-      Generated by <strong>ppagent</strong> on 2026-06-25 23:23
+      Generated by <strong>ppagent</strong> on 2026-06-25 23:37
     </div>
     <div>
       Model: <code>deepseek-v4-pro</code>
